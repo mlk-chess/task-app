@@ -5,7 +5,7 @@
         "APP_SECRET": {
             "generator": "secret"
         },
-        "CORS_ALLOW_ORIGIN": "https://your-client-url.com"
+        "CORS_ALLOW_ORIGIN": "*"
     },
     "addons": [
         "heroku-postgresql"
