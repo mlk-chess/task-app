@@ -4,6 +4,19 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-auth:
-    path: /auth
+# auth:
+#     path: /auth
+#     methods: ['POST']
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+
+login:
+    path: /api/login
     methods: ['POST']
+    controller: App\Controller\LoginController
+
+auth:
+    path: /api/auth
+    methods: ['POST']
+    controller: App\Controller\AuthJWTController

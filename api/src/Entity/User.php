@@ -19,8 +19,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\LoginController;
 
 #[ApiResource(
+    routePrefix: 'api',
     operations: [
         new GetCollection(),
         new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
@@ -28,7 +30,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
-        // Hash password
         new Post(processor: UserPasswordHasher::class),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
@@ -39,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
+// #[ApiResource(routePrefix: '/api')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['user:read'])]
