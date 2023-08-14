@@ -1,0 +1,30 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "vitest": "vitest --globals"
+  },
+  "dependencies": {
+    "@vuepic/vue-datepicker": "^3.6.5",
+    "flowbite": "^1.8.1",
+    "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
+    "vue": "^3.2.45",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/test-utils": "^2.2.10",
+    "autoprefixer": "^10.4.14",
+    "daisyui": "^3.5.1",
+    "happy-dom": "^8.2.6",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.0.0",
+    "vitest": "^0.28.4"
+  }
+}
