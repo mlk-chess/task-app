@@ -103,11 +103,11 @@ const changeTheme = (e) => {
     if (e.target.checked) {
         theme.value = "dracula"
         localStorage.setItem("theme", theme.value);
-        document.querySelector("html").setAttribute("data-theme", theme.value)
+        document.querySelector("html").setAttribute("data-theme", localStorage.getItem("theme"))
     } else {
         theme.value = "lemonade"
         localStorage.setItem("theme", theme.value);
-        document.querySelector("html").setAttribute("data-theme", theme.value)
+        document.querySelector("html").setAttribute("data-theme", localStorage.getItem("theme"))
     }
 }
 
@@ -132,7 +132,6 @@ fetch(requestToken)
         }
     })
 
-// logout function
 const logout = () => {
     jsCookie.remove('jwt')
     window.location.href = '/login'
