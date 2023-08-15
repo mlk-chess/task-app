@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import Alert from './UI/Alert.vue';
 
 const registerData = ref({
   username: null,
@@ -48,7 +49,6 @@ function register() {
 
   fetch(requestRegister)
     .then(response => {
-      console.log(response)
       if (response.status === 201) {
         Object.keys(registerData.value).forEach(key => {
           registerData.value[key] = null;
@@ -60,8 +60,15 @@ function register() {
       }
     })
     .then(data => {
-      console.log(data)
-      registerData.value.error = data
+      if (data.violations) {
+        if (data.violations[0]['propertyPath'] === 'email') {
+          registerData.value.error = 'Cet email est déjà utilisé !'
+        } else if (data.violations[0]['propertyPath'] === 'username') {
+          registerData.value.error = "Ce nom d'utilisateur est déjà attribué à un utilisateur"
+        }
+      } else {
+        registerData.value.error = 'Une erreur est survenue. Réessayez plus tard ou contactez nous.'
+      }
     })
 }
 </script>
@@ -78,8 +85,14 @@ function register() {
         <div class="card-body">
           <h2 class="card-title">Inscription</h2>
           <form @submit.prevent="register">
-            <p v-if="registerData.error" class="has-text-centered has-text-danger">{{ registerData.error }}</p>
-            <p v-if="registerData.success" class="has-text-centered has-text-success">{{ registerData.success }}</p>
+            <div v-if="registerData.error">
+              <Alert type="warning" :message="registerData.error" />
+            </div>
+
+            <div v-if="registerData.success">
+              <Alert type="success" :message="registerData.success" />
+            </div>
+
             <div class="form-group mb-3">
               <label class="label">
                 <span class="label-text">Nom d'utilisateur</span>
