@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import jsCookie from "js-cookie";
+import Alert from './UI/Alert.vue';
 
 const router = useRouter()
 
@@ -38,11 +39,11 @@ function login() {
     .then((data) => {
       if (data.token) {
         jsCookie.set('jwt', data.token, { expires: 1 })
-        router.push({ name: 'home' })
+        router.push({ name: 'dashboard' })
       } else if (data.message === 'Not confirmed') {
         loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
       } else {
-        loginData.value.error = 'Email ou mot de passe incorrect'
+        loginData.value.error = 'Identifiants incorrects !'
       }
     })
 }
@@ -60,7 +61,9 @@ function login() {
         <div class="card-body">
           <h2 class="card-title">Connexion</h2>
           <form @submit.prevent="login">
-            <p v-if="loginData.error" class="has-text-centered has-text-danger">{{ loginData.error }}</p>
+            <div v-if="loginData.error">
+              <Alert type="warning" :message="loginData.error" />
+            </div>
 
             <div class="form-group mb-3">
               <label class="label">
@@ -74,8 +77,7 @@ function login() {
                 <span class="label-text">Mot de passe</span>
               </label>
               <input v-model="loginData.password" type="password" name="password" id="password"
-                class="input input-bordered w-full max-w-xs" placeholder="*********"
-                />
+                class="input input-bordered w-full max-w-xs" placeholder="*********" />
             </div>
             <label class="label">
               <a href="#" class="label-text-alt link link-hover">Mot de passe oublié?</a>

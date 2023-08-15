@@ -1,7 +1,7 @@
 <template>
     <div v-if="!isConnected" class="navbar bg-base-100">
         <div class="flex-1">
-            <a class="btn btn-ghost normal-case text-xl">TaskApp</a>
+            <router-link to="/" class="btn btn-ghost normal-case text-xl">TaskApp</router-link>
         </div>
         <div class="flex-none">
             <ul class="menu menu-horizontal px-1">
@@ -21,14 +21,14 @@
                     </svg>
                 </label>
                 <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a>Dashboard</a></li>
-                    <li><a>Listes des tâches</a></li>
-                    <li><a>Tâches</a></li>
+                    <li><router-link to="/dashboard">Dashboard</router-link></li>
+                    <li><router-link to="/lists">Listes des tâches</router-link></li>
+                    <li><router-link to="/tasks">Tâches</router-link></li>
                 </ul>
             </div>
         </div>
         <div class="navbar-center">
-            <a class="btn btn-ghost normal-case text-xl">TaskApp</a>
+            <router-link to="/" class="btn btn-ghost normal-case text-xl">TaskApp</router-link>
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
