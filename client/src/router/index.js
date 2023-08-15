@@ -4,6 +4,7 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import PageNotFound from "@/views/PageNotFound.vue";
 import HomeView from "@/views/HomeView.vue"
+import DashboardView from "@/views/DashboardView.vue"
 
 
 const router = createRouter({
@@ -13,7 +14,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView
+      component: HomeView,
     },
     {
       path: "/login",
@@ -29,6 +30,14 @@ const router = createRouter({
       component: RegisterView,
       meta: {
         requiresLogin: true
+      }
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: DashboardView,
+      meta: {
+        requiresAuth: true
       }
     },
     {

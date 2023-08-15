@@ -6,8 +6,8 @@ import jsCookie from "js-cookie";
 const router = useRouter()
 
 const loginData = ref({
-  email: null,
-  password: null,
+  email: "johndoe@example.com",
+  password: "apassword",
   error: null
 });
 
@@ -52,7 +52,7 @@ function login() {
   <section class="flex items-center justify-center mt-10">
 
     <div class="flex-1">
-      <img src="../assets/img/Login-rafiki.png" alt="Illustration de connexion" />
+      <img src="@/assets/img/Login-rafiki.png" alt="Illustration de connexion" />
     </div>
 
     <div class="flex-1">
@@ -74,7 +74,8 @@ function login() {
                 <span class="label-text">Mot de passe</span>
               </label>
               <input v-model="loginData.password" type="password" name="password" id="password"
-                class="input input-bordered w-full max-w-xs" placeholder="*********" />
+                class="input input-bordered w-full max-w-xs" placeholder="*********"
+                />
             </div>
             <label class="label">
               <a href="#" class="label-text-alt link link-hover">Mot de passe oublié?</a>
