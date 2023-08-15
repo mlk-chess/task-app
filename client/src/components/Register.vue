@@ -109,7 +109,7 @@ function register() {
                 class="input input-bordered w-full max-w-xs" placeholder="*********" />
             </div>
             <div class="form-control mt-6">
-              <button type="submit" class="btn btn-primary">Register</button>
+              <button type="submit" class="btn btn-secondary">Register</button>
             </div>
           </form>
         </div>
