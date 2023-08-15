@@ -69,49 +69,52 @@ function register() {
 <template>
   <section class="flex items-center justify-center mt-10">
 
-    <div class="card w-96 bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Inscription</h2>
+    <div class="flex-1">
+      <img src="../assets/img/Queue-amico.png" alt="Illustration d'inscription" />
+    </div>
 
-        <form @submit.prevent="register">
-
-          <p v-if="registerData.error" class="has-text-centered has-text-danger">{{ registerData.error }}</p>
-          <p v-if="registerData.success" class="has-text-centered has-text-success">{{ registerData.success }}</p>
-          <div class="form-group mb-3">
-            <label class="label">
-              <span class="label-text">Nom d'utilisateur</span>
-            </label>
-            <input v-model="registerData.username" type="text" placeholder="jean.dupont"
-              class="input input-bordered w-full max-w-xs" />
-          </div>
-          <div class="form-group mb-3">
-            <label class="label">
-              <span class="label-text">Email</span>
-            </label>
-            <input v-model="registerData.email" type="email" placeholder="jean.dupont@gmail.com"
-              class="input input-bordered w-full max-w-xs" />
-          </div>
-          <div class="form-group">
-            <label class="label">
-              <span class="label-text">Mot de passe</span>
-            </label>
-            <input v-model="registerData.password" type="password" name="password" id="password"
-              class="input input-bordered w-full max-w-xs" placeholder="*********" />
-          </div>
-          <div class="form-group">
-            <label class="label">
-              <span class="label-text">Mot de passe de confirmation</span>
-            </label>
-            <input type="password" name="passwordConfirm" id="passwordConfirm" v-model="registerData.confirmPassword"
-              class="input input-bordered w-full max-w-xs" placeholder="*********" />
-          </div>
-
-          <div class="form-control mt-6">
-            <button type="submit" class="btn btn-primary">Register</button>
-          </div>
-
-        </form>
+    <div class="flex-1">
+      <div class="card w-96 bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">Inscription</h2>
+          <form @submit.prevent="register">
+            <p v-if="registerData.error" class="has-text-centered has-text-danger">{{ registerData.error }}</p>
+            <p v-if="registerData.success" class="has-text-centered has-text-success">{{ registerData.success }}</p>
+            <div class="form-group mb-3">
+              <label class="label">
+                <span class="label-text">Nom d'utilisateur</span>
+              </label>
+              <input v-model="registerData.username" type="text" placeholder="jean.dupont"
+                class="input input-bordered w-full max-w-xs" />
+            </div>
+            <div class="form-group mb-3">
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input v-model="registerData.email" type="email" placeholder="jean.dupont@gmail.com"
+                class="input input-bordered w-full max-w-xs" />
+            </div>
+            <div class="form-group">
+              <label class="label">
+                <span class="label-text">Mot de passe</span>
+              </label>
+              <input v-model="registerData.password" type="password" name="password" id="password"
+                class="input input-bordered w-full max-w-xs" placeholder="*********" />
+            </div>
+            <div class="form-group">
+              <label class="label">
+                <span class="label-text">Mot de passe de confirmation</span>
+              </label>
+              <input type="password" name="passwordConfirm" id="passwordConfirm" v-model="registerData.confirmPassword"
+                class="input input-bordered w-full max-w-xs" placeholder="*********" />
+            </div>
+            <div class="form-control mt-6">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
+
   </section>
 </template>
