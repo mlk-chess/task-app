@@ -1,5 +1,5 @@
 <template>
-  <section class="flex items-center justify-center h-screen">
+  <section class="flex items-center justify-center mt-10">
     <div class="card w-96 bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Connexion</h2>
@@ -8,7 +8,7 @@
             <label class="label">
               <span class="label-text">Email</span>
             </label>
-            <input type="email" placeholder="email@address.com" class="input input-bordered w-full max-w-xs" />
+            <input type="email" placeholder="jean.dupont@gmail.com" class="input input-bordered w-full max-w-xs" />
           </div>
           <div class="form-group">
             <label class="label">

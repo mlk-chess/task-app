@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import jsCookie from 'js-cookie'
 import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 import PageNotFound from "@/views/PageNotFound.vue";
 
 
@@ -11,6 +12,14 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      meta: {
+        requiresLogin: true
+      }
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: RegisterView,
       meta: {
         requiresLogin: true
       }
