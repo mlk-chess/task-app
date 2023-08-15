@@ -77,7 +77,7 @@ function register() {
   <section class="flex items-center justify-center mt-10">
 
     <div class="flex-1">
-      <img src="../assets/img/Queue-amico.png" alt="Illustration d'inscription" />
+      <img src="@/assets/img/Queue-amico.png" alt="Illustration d'inscription" />
     </div>
 
     <div class="flex-1">
@@ -90,7 +90,7 @@ function register() {
             </div>
 
             <div v-if="registerData.success">
-              <Alert type="success" :message="registerData.success" />
+              <Alert type="info" :message="registerData.success" />
             </div>
 
             <div class="form-group mb-3">
