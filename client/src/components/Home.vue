@@ -1,7 +1,7 @@
 <template>
     <div class="hero min-h-screen bg-base-200">
         <div class="hero-content flex-col lg:flex-row-reverse">
-            <img src="@/assets/img/Office management-rafiki.png" class="max-w-sm rounded-lg shadow-2xl" />
+            <img src="@/assets/img/Office management-rafiki.png" class="max-w-sm rounded-lg" />
             <div>
                 <h1 class="text-5xl font-bold">Gérez facilement vos tâches</h1>
                 <p class="py-6">

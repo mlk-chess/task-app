@@ -1931,6 +1931,14 @@ html {
   z-index: 1;
 }
 
+.m-0 {
+  margin: 0px;
+}
+
+.m-auto {
+  margin: auto;
+}
+
 .mb-3 {
   margin-bottom: 0.75rem;
 }
@@ -1967,6 +1975,14 @@ html {
   height: 1.25rem;
 }
 
+.h-screen {
+  height: 100vh;
+}
+
+.h-4\/6 {
+  height: 66.666667%;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1985,6 +2001,14 @@ html {
 
 .w-full {
   width: 100%;
+}
+
+.w-3\/12 {
+  width: 25%;
+}
+
+.w-3\/6 {
+  width: 50%;
 }
 
 .max-w-xs {
@@ -2043,6 +2067,11 @@ html {
 
 .fill-current {
   fill: currentColor;
+}
+
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .p-10 {
