@@ -33,9 +33,9 @@ class LoginController extends AbstractController
         if (!$this->hasher->isPasswordValid($user, $parameters['password'])) {
             return $this->json(['message' => 'Error login'], 401);
         }
-        // if ($user->getStatus() !== 1 && $user->getStatus() !== 2 && $user->getStatus() !== 3) {
-        //     return $this->json(['message' => 'Not confirmed'], 401);
-        // }
+        if ($user->getStatus() !== 1 && $user->getStatus() !== 2 && $user->getStatus() !== 3) {
+            return $this->json(['message' => 'Not confirmed'], 401);
+        }
 
         return $this->json(['token' => $this->JWTManager->create($user)]);
     }
