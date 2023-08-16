@@ -10,7 +10,7 @@ class ApiMailerService
     static function send_email($to, $subject, $text)
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('mkajeiou3@myges.fr', 'Cozy Challenge'))
+            ->from(new Address('mkajeiou3@myges.fr', 'mlkdev - taskapp'))
             ->to($to)
             ->subject($subject)
             ->html($text);
