@@ -2,7 +2,7 @@
     <div v-if="!isConnected" class="navbar bg-base-100">
         <div class="flex-1">
             <router-link to="/" class="btn btn-ghost normal-case text-xl">
-                <img src="@/assets/logo.png" alt="Logo" class="w-10 h-10" />
+                <img src="@/assets/logo.png" alt="Logo" class="w-16 h-16" />
             </router-link>
         </div>
         <div class="flex-none">
@@ -42,7 +42,7 @@
         </div>
         <div class="navbar-center">
             <router-link to="/" class="btn btn-ghost normal-case text-xl">
-                <img src="@/assets/logo.png" alt="Logo" class="w-10 h-10" />
+                <img src="@/assets/logo.png" alt="Logo" class="w-16 h-16" />
             </router-link>
         </div>
         <div class="navbar-end">
