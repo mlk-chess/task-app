@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import jsCookie from 'js-cookie'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
+import jsCookie from 'js-cookie';
+import LoginView from '@/views/LoginView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 import PageNotFound from "@/views/PageNotFound.vue";
-import HomeView from "@/views/HomeView.vue"
-import DashboardView from "@/views/DashboardView.vue"
-
+import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/DashboardView.vue";
+import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +39,11 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: "/confirm-account",
+      name: "confirm-account",
+      component: ConfirmAccountView,
     },
     {
       path: "/:pathMatch(.*)*",
