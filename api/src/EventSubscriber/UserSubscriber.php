@@ -23,24 +23,22 @@ use Symfony\Component\Mailer\MailerInterface;
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::VIEW =>   ['confirmEmail', EventPriorities::PRE_WRITE]
-
+            KernelEvents::VIEW =>   ['sendMailToUsers', EventPriorities::PRE_WRITE],
         ];
     }
 
-    public function confirmEmail(ViewEvent $event)
+    public function sendMailToUsers(ViewEvent $event)
     {
         $user =  $event ->getControllerResult();
         $method = $event ->getRequest()->getMethod();
-        if ($user instanceof User && $method === "POST")
-        {
+        if ($user instanceof User && $method === "POST"){
             $token = bin2hex(random_bytes(64));
             $user->setToken($token);
 
             $email = ApiMailerService::send_email(
                                 $user->getEmail(),
                                 "Création de votre compte",
-                                'Bonjour, voici le lien pour valider votre compte : https://localhost:8081/confirm-account?token=' . $token,
+                                'Bonjour, voici le lien pour valider votre compte : <a href="localhost:8081/confirm-account?token=' . $token . '">valider mon compte</a>',
                             );
 
             $this->mailer->send($email);

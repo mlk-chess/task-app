@@ -62,7 +62,7 @@ function login() {
           <h2 class="card-title">Connexion</h2>
           <form @submit.prevent="login">
             <div v-if="loginData.error">
-              <Alert type="warning" :message="loginData.error" />
+              <Alert :type="warning" :message="loginData.error" />
             </div>
 
             <div class="form-group mb-3">

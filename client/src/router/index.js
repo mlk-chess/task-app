@@ -6,11 +6,11 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import HomeView from "@/views/HomeView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
+import ResetPasswordView from "@/views/ResetPasswordView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-
     {
       path: "/",
       name: "home",
@@ -44,6 +44,11 @@ const router = createRouter({
       path: "/confirm-account",
       name: "confirm-account",
       component: ConfirmAccountView,
+    },
+    {
+      path: "/reset-password",
+      name: "reset-password",
+      component: ResetPasswordView,
     },
     {
       path: "/:pathMatch(.*)*",
