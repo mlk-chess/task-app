@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import NavBar from "@/components/NavBar.vue";
+import Alert from "@/components/UI/Alert.vue"
+import Footer from '../components/Footer.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -31,14 +34,20 @@ onMounted(() => {
 </script>
 
 <template>
+    <NavBar />
     <div>
         <div v-if="success">
-            <h1>Success</h1>
-            <p>Your account has been confirmed.</p>
+            <Alert type="success" message="Votre compte a bien été confirmé !" />
+            <div class="w-3/6 m-auto">
+                <img src="@/assets/img/Onboarding-rafiki.png" />
+            </div>
         </div>
         <div v-if="error">
-            <h1>Error</h1>
-            <p>Your account could not be confirmed.</p>
+            <Alert type="error" message="Une erreur s'est produite, veuillez contacter un administrateur ou essayez de vous connecter." />
+            <div class="w-3/6 m-auto">
+                <img src="@/assets/img/error.png" />
+            </div>
         </div>
     </div>
+    <Footer />
 </template>
