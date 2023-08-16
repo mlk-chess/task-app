@@ -18,6 +18,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\ConfirmAccountController;
+use App\Controller\ResetPasswordController;
 
 #[ApiResource(
     routePrefix: 'api',
@@ -31,6 +33,19 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(processor: UserPasswordHasher::class),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
+        new Patch(
+            routePrefix: '',
+            name: 'reset-password',
+            uriTemplate: '/reset/password',
+            controller: ResetPasswordController::class
+        ),
+        new Get(
+            routePrefix: '',
+            name: 'confirm-account',
+            uriTemplate: '/confirm-account/{token}',
+            controller: ConfirmAccountController::class,
+            read: false
+        )
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
@@ -71,6 +86,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $status = 0;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -156,6 +174,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): static
+    {
+        $this->token = $token;
 
         return $this;
     }
