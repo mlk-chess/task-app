@@ -36,8 +36,7 @@ function resetPassword() {
 
     fetch(reset)
       .then(response => {
-        console.log(response)
-        // router.push({name: 'login'})
+        router.push({name: 'login'})
       })
   }
 }

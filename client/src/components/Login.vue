@@ -80,7 +80,7 @@ function login() {
                 class="input input-bordered w-full max-w-xs" placeholder="*********" />
             </div>
             <label class="label">
-              <a href="#" class="label-text-alt link link-hover">Mot de passe oublié?</a>
+              <router-link to="/password-forgotten" class="label-text-alt link link-hover">Mot de passe oublié?</router-link>
             </label>
 
             <div class="form-control mt-6">
