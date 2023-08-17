@@ -109,7 +109,7 @@ const theme = ref(localStorage.getItem("theme") || "lemonade");
 
 const changeTheme = (e) => {
     if (e.target.checked) {
-        theme.value = "dracula"
+        theme.value = "night"
         localStorage.setItem("theme", theme.value);
     } else {
         theme.value = "lemonade"

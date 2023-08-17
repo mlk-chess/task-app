@@ -1,6 +1,6 @@
 <template>
     <div class="toast">
-        <div :class="alertClass">
+        <div :class="props.type">
             <svg v-if="props.type === 'success'" xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,8 +30,6 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-
 const props = defineProps({
     type: {
         type: String,
@@ -40,5 +38,4 @@ const props = defineProps({
     message: String
 });
 
-const alertClass = computed(() => "alert alert-" + props.type);
 </script>   
