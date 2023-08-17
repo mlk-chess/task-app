@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Controller\ConfirmAccountController;
 use App\Controller\ResetPasswordController;
+use App\Controller\ResetEmailController;
 
 #[ApiResource(
     routePrefix: 'api',
@@ -36,6 +37,12 @@ use App\Controller\ResetPasswordController;
             name: 'reset-password',
             uriTemplate: '/reset/password',
             controller: ResetPasswordController::class
+        ),
+        new Post(
+            routePrefix: '',
+            name: 'reset-email',
+            uriTemplate: '/reset/email',
+            controller: ResetEmailController::class
         ),
         new Get(
             routePrefix: '',

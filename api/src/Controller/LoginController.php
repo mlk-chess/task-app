@@ -26,17 +26,16 @@ class LoginController extends AbstractController
     {
         $parameters = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
 
-        if (!$user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $parameters['email']])) {
-            return $this->json(['message' => 'Not exist'], 401);
-        }
+        if (!$user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $parameters['email']])) 
+            if(!$user = $this->managerRegistry->getRepository(User::class)->findOneBy(['username' => $parameters['email']]))
+                return $this->json(['message' => 'Not exist'], 401);
+        
 
-        if (!$this->hasher->isPasswordValid($user, $parameters['password'])) {
+        if (!$this->hasher->isPasswordValid($user, $parameters['password'])) 
             return $this->json(['message' => 'Error login'], 401);
-        }
-        if ($user->getStatus() !== 1 && $user->getStatus() !== 2 && $user->getStatus() !== 3) {
+        
+        if ($user->getStatus() !== 1 && $user->getStatus() !== 2 && $user->getStatus() !== 3) 
             return $this->json(['message' => 'Not confirmed'], 401);
-        }
-
         
         return $this->json(['token' => $this->JWTManager->create($user)]);
     }
