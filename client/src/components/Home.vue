@@ -1,10 +1,10 @@
 <template>
     <div class="hero min-h-screen bg-base-200">
-        <div class="hero-content flex-col lg:flex-row-reverse">
+        <div class="hero-content flex-col lg:flex-row-reverse m-10">
             <img src="@/assets/img/Office management-rafiki.png" class="max-w-sm rounded-lg" />
             <div>
-                <h1 class="text-5xl font-bold">Gérez facilement vos tâches</h1>
-                <p class="py-6">
+                <h1 class="text-5xl font-bold m-10">Gérez facilement vos tâches</h1>
+                <p class="m-10">
                     Simplifiez votre quotidien avec notre solution innovante. Gérez facilement vos tâches grâce à une
                     interface conviviale et intuitive. Ne laissez plus le chaos s'installer – organisez vos journées de
                     manière efficace et atteignez vos objectifs en toute sérénité. Que ce soit pour le travail, les études
@@ -12,7 +12,7 @@
                     productivité. Dites adieu au stress de la gestion des tâches et commencez dès aujourd'hui à vivre une
                     vie plus organisée et épanouissante.
                 </p>
-                <router-link to="/dashboard" class="btn btn-primary">C'est parti</router-link>
+                <router-link to="/dashboard" class="btn btn-primary ml-10">C'est parti</router-link>
             </div>
         </div>
     </div>

@@ -1,6 +1,8 @@
 <script setup>
-import {onMounted, ref} from 'vue'
-import {useRoute, useRouter} from 'vue-router'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Footer from '@/components/Footer.vue';
+import NavBar from '@/components/NavBar.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -13,24 +15,6 @@ const data = ref({
 })
 
 
-onMounted(() => {
-  const token = route.query.token
-
-  if (token === undefined) {
-    router.push({name: 'login'})
-  } else {
-    fetch(`https://localhost/check-token/${token}`, {
-      method: 'GET',
-    })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data !== 'Success') {
-            error.value = true
-          }
-        })
-  }
-})
-
 function resetPassword() {
   data.value.error = null
 
@@ -40,7 +24,7 @@ function resetPassword() {
     data.value.error = 'Les mots de passe ne correspondent pas'
   } else {
     const reset = new Request(`https://localhost/reset/password`, {
-      method: 'Patch',
+      method: 'PATCH',
       body: JSON.stringify({
         password: data.value.password,
         token: route.query.token
@@ -51,15 +35,17 @@ function resetPassword() {
     })
 
     fetch(reset)
-        .then(response => {
-          router.push({name: 'login'})
-        })
+      .then(response => {
+        console.log(response)
+        // router.push({name: 'login'})
+      })
   }
 }
 </script>
 
 <template>
-  <div class="container">
+  <section>
+    <NavBar />
     <div v-if="!error">
       <div class="card">
         <div class="card-content">
@@ -94,7 +80,6 @@ function resetPassword() {
       </div>
     </div>
 
-
     <div v-else>
       <div class="notification is-warning">
         <p>Le lien n'est pas valide !</p>
@@ -104,5 +89,6 @@ function resetPassword() {
         <router-link to="/login" class="button is-info">Se connecter</router-link>
       </div>
     </div>
-  </div>
+    <Footer />
+  </section>
 </template>

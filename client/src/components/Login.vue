@@ -67,9 +67,9 @@ function login() {
 
             <div class="form-group mb-3">
               <label class="label">
-                <span class="label-text">Email</span>
+                <span class="label-text">Nom d'utilisateur ou email</span>
               </label>
-              <input v-model="loginData.email" type="email" placeholder="jean.dupont@gmail.com"
+              <input v-model="loginData.email" type="text" placeholder="jean.dupont@gmail.com"
                 class="input input-bordered w-full max-w-xs" />
             </div>
             <div class="form-group">
