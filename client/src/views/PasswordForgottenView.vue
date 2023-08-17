@@ -2,9 +2,10 @@
 import { ref } from 'vue'
 import Footer from '@/components/Footer.vue';
 import NavBar from '@/components/NavBar.vue';
-import Alert from '../components/UI/Alert.vue';
+import Alert from '@/components/UI/Alert.vue';
 
 const error = ref(null)
+const success = ref(null)
 const data = ref({
     email: null,
     error: null
@@ -22,13 +23,21 @@ function newLink() {
                 email: data.value.email,
             }),
             headers: {
-                "Content-Type": "application/merge-post+json"
+                "Content-Type": "application/json"
             }
         })
 
         fetch(reset)
-            .then(response => {
-                console.log(response)
+            .then(response => response.status === 200 && response.json())
+            .then(data => {
+                if (data)
+                    if (data.message === 'error') {
+                        error.value = "Adresse email introuvable. Veuillez réessayer"
+                        success.value = null;
+                    } else {
+                        error.value = null;
+                        success.value = "Un email vous a été envoyé. Suivez les instructions qui vous ont été envoyées par mail.";
+                    }
             })
     }
 }
@@ -37,8 +46,12 @@ function newLink() {
 <template>
     <section>
         <NavBar />
-        <div v-if="!error">
-            <div class="flex justify-center items-center mt-10">
+        <div>
+            <div class="flex justify-center items-center flex-col mt-10">
+                <div>
+                    <Alert v-if="success" type="success" :message="success" />
+                    <Alert v-if="error" type="error" :message="error" />
+                </div>
                 <div class="card w-96 bg-base-100 shadow-xl">
                     <div class="card-body">
                         <h2 class="card-title">Récupération de votre compte</h2>
@@ -51,7 +64,7 @@ function newLink() {
                                 <label class="label">
                                     <span class="label-text">Email</span>
                                 </label>
-                                <input v-model="data.email" type="text" placeholder="jean.dupont@gmail.com"
+                                <input v-model="data.email" type="email" placeholder="jean.dupont@gmail.com"
                                     class="input input-bordered w-full max-w-xs" />
                             </div>
 
@@ -62,6 +75,9 @@ function newLink() {
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="w-5/12">
+                <img src="@/assets/img/password-amico.png" />
             </div>
         </div>
         <Footer />

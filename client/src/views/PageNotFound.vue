@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavBar />
-    <div class="w-3/6 m-auto">
+    <div class="w-5/12 m-auto">
       <img src="@/assets/img/404.png" />
     </div>
   </div>
