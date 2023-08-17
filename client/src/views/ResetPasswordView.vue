@@ -3,17 +3,20 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Footer from '@/components/Footer.vue';
 import NavBar from '@/components/NavBar.vue';
+import Alert from '../components/UI/Alert.vue';
 
 const route = useRoute()
 const router = useRouter()
 
-const error = ref(null)
+if (!route.query.token)
+  router.push({ name: 'login' })
+
 const data = ref({
   password: null,
   passwordConfirm: null,
-  error: null
+  error: null,
+  success: null
 })
-
 
 function resetPassword() {
   data.value.error = null
@@ -35,8 +38,15 @@ function resetPassword() {
     })
 
     fetch(reset)
-      .then(response => {
-        router.push({name: 'login'})
+      .then(response => response.status === 200 && response.json())
+      .then(res => {
+        if (res) {
+          data.value.error = null;
+          data.value.success = "Votre mot de passe a bien été changé !";
+        } else {
+          data.value.error = "Une erreur s'est produite lors de la réinitialisation du mot de passe.";
+          data.value.success = null;
+        }
       })
   }
 }
@@ -45,47 +55,45 @@ function resetPassword() {
 <template>
   <section>
     <NavBar />
-    <div v-if="!error">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            <div>
-              <h2 class="has-text-centered">Réinitialisation du mot de passe</h2>
-
+    <div>
+      <div class="flex justify-center items-center flex-col mt-10">
+        <div class="flex justify-center items-center">
+          <div class="card w-96 bg-base-100 shadow-xl p-0">
+            <div class="card-body">
+              <h2 class="card-title">Changez votre mot de passe</h2>
               <form @submit.prevent="resetPassword">
-                <div class="field">
-                  <label class="label">Mot de passe</label>
-                  <div class="control">
-                    <input v-model="data.password" class="input" type="password" placeholder="*****">
-                  </div>
+                <div>
+                  <Alert v-if="data.success" type="success" :message="data.success" />
+                  <Alert v-if="data.error" type="error" :message="data.error" />
                 </div>
 
-                <div class="field">
-                  <label class="label">Confirmation du mot de passe</label>
-                  <div class="control">
-                    <input v-model="data.passwordConfirm" class="input" type="password" placeholder="*****">
-                  </div>
+                <div class="form-group mb-3">
+                  <label class="label">
+                    <span class="label-text">Mot de passe</span>
+                  </label>
+                  <input v-model="data.password" type="password" placeholder="**************"
+                    class="input input-bordered w-full max-w-xs" />
                 </div>
 
-                <p v-if="data.error" class="has-text-centered has-text-danger">{{ data.error }}</p>
-
-                <div class="is-flex is-justify-content-center">
-                  <button class="button btn--lavender" type="submit">Se connecter</button>
+                <div class="form-group mb-3">
+                  <label class="label">
+                    <span class="label-text">Confirmation du mot de passe</span>
+                  </label>
+                  <input v-model="data.passwordConfirm" type="password" placeholder="**************"
+                    class="input input-bordered w-full max-w-xs" />
                 </div>
+
+                <div class="form-control mt-6">
+                  <button type="submit" class="btn btn-primary">Se connecter</button>
+                </div>
+
               </form>
             </div>
           </div>
+          <div class="w-5/12">
+            <img src="@/assets/img/Authentication-rafiki.png" />
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div v-else>
-      <div class="notification is-warning">
-        <p>Le lien n'est pas valide !</p>
-      </div>
-
-      <div class="is-flex is-justify-content-center">
-        <router-link to="/login" class="button is-info">Se connecter</router-link>
       </div>
     </div>
     <Footer />

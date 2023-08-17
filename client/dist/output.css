@@ -2343,6 +2343,10 @@ html {
   margin: auto;
 }
 
+.m-0 {
+  margin: 0px;
+}
+
 .mb-3 {
   margin-bottom: 0.75rem;
 }
@@ -2455,6 +2459,10 @@ html {
   grid-auto-flow: column;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -2503,6 +2511,10 @@ html {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.p-0 {
+  padding: 0px;
 }
 
 .px-1 {
