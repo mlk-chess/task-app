@@ -3,8 +3,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import jsCookie from "js-cookie";
 import Alert from './UI/Alert.vue';
+import Loading from './UI/Loading.vue';
 
 const router = useRouter()
+
+const isLoad = ref(false);
 
 const loginData = ref({
   email: "johndoe@example.com",
@@ -13,6 +16,7 @@ const loginData = ref({
 });
 
 function login() {
+  isLoad.value = true
   loginData.value.error = null
 
   if (loginData.value.email === null || loginData.value.password === null) {
@@ -45,6 +49,7 @@ function login() {
       } else {
         loginData.value.error = 'Identifiants incorrects !'
       }
+      isLoad.value = false
     }).catch(e => console.error(e))
 }
 </script>
@@ -58,7 +63,8 @@ function login() {
 
     <div class="flex-1">
       <div class="card w-96 bg-base-100 shadow-xl">
-        <div class="card-body">
+        <Loading v-if="isLoad" />
+        <div class="card-body" v-else>
           <h2 class="card-title">Connexion</h2>
           <form @submit.prevent="login">
             <div v-if="loginData.error">
@@ -80,7 +86,8 @@ function login() {
                 class="input input-bordered w-full max-w-xs" placeholder="*********" />
             </div>
             <label class="label">
-              <router-link to="/password-forgotten" class="label-text-alt link link-hover">Mot de passe oublié?</router-link>
+              <router-link to="/password-forgotten" class="label-text-alt link link-hover">Mot de passe
+                oublié?</router-link>
             </label>
 
             <div class="form-control mt-6">

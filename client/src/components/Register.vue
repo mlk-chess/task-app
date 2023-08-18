@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from "vue";
 import Alert from './UI/Alert.vue';
+import Loading from './UI/Loading.vue';
+
+const isLoad = ref(false);
 
 const registerData = ref({
   username: null,
@@ -32,6 +35,7 @@ function register() {
     registerData.value.error = 'Le mot de passe doit contenir au moins 8 caractères.'
     return
   }
+  isLoad.value = true
 
   const requestRegister = new Request(
     "https://localhost/api/users",
@@ -60,15 +64,17 @@ function register() {
       }
     })
     .then(data => {
-      if (data.violations) {
-        if (data.violations[0]['propertyPath'] === 'email') {
-          registerData.value.error = 'Cet email est déjà utilisé !'
-        } else if (data.violations[0]['propertyPath'] === 'username') {
-          registerData.value.error = "Ce nom d'utilisateur est déjà attribué à un utilisateur"
+      if (data !== undefined)
+        if ("violations" in data) {
+          if (data.violations[0]['propertyPath'] === 'email') {
+            registerData.value.error = 'Cet email est déjà utilisé !'
+          } else if (data.violations[0]['propertyPath'] === 'username') {
+            registerData.value.error = "Ce nom d'utilisateur est déjà attribué à un utilisateur"
+          }
+        } else {
+          registerData.value.error = 'Une erreur est survenue. Réessayez plus tard ou contactez nous.'
         }
-      } else {
-        registerData.value.error = 'Une erreur est survenue. Réessayez plus tard ou contactez nous.'
-      }
+      isLoad.value = false
     })
 }
 </script>
@@ -83,48 +89,51 @@ function register() {
     <div class="flex-1 ml-20">
       <div class="card w-96 bg-base-100 shadow-xl">
         <div class="card-body">
-          <h2 class="card-title">Inscription</h2>
-          <form @submit.prevent="register">
-            <div v-if="registerData.error">
-              <Alert type="warning" :message="registerData.error" />
-            </div>
+          <Loading v-if="isLoad" />
+          <div v-else>
+            <h2 class="card-title">Inscription</h2>
+            <form @submit.prevent="register">
+              <div v-if="registerData.error">
+                <Alert type="warning" :message="registerData.error" />
+              </div>
 
-            <div v-if="registerData.success">
-              <Alert type="info" :message="registerData.success" />
-            </div>
+              <div v-if="registerData.success">
+                <Alert type="info" :message="registerData.success" />
+              </div>
 
-            <div class="form-group mb-3">
-              <label class="label">
-                <span class="label-text">Nom d'utilisateur</span>
-              </label>
-              <input v-model="registerData.username" type="text" placeholder="jean.dupont"
-                class="input input-bordered w-full max-w-xs" />
-            </div>
-            <div class="form-group mb-3">
-              <label class="label">
-                <span class="label-text">Email</span>
-              </label>
-              <input v-model="registerData.email" type="email" placeholder="jean.dupont@gmail.com"
-                class="input input-bordered w-full max-w-xs" />
-            </div>
-            <div class="form-group">
-              <label class="label">
-                <span class="label-text">Mot de passe</span>
-              </label>
-              <input v-model="registerData.password" type="password" name="password" id="password"
-                class="input input-bordered w-full max-w-xs" placeholder="*********" />
-            </div>
-            <div class="form-group">
-              <label class="label">
-                <span class="label-text">Mot de passe de confirmation</span>
-              </label>
-              <input type="password" name="passwordConfirm" id="passwordConfirm" v-model="registerData.confirmPassword"
-                class="input input-bordered w-full max-w-xs" placeholder="*********" />
-            </div>
-            <div class="form-control mt-6">
-              <button type="submit" class="btn btn-secondary">Register</button>
-            </div>
-          </form>
+              <div class="form-group mb-3">
+                <label class="label">
+                  <span class="label-text">Nom d'utilisateur</span>
+                </label>
+                <input v-model="registerData.username" type="text" placeholder="jean.dupont"
+                  class="input input-bordered w-full max-w-xs" />
+              </div>
+              <div class="form-group mb-3">
+                <label class="label">
+                  <span class="label-text">Email</span>
+                </label>
+                <input v-model="registerData.email" type="email" placeholder="jean.dupont@gmail.com"
+                  class="input input-bordered w-full max-w-xs" />
+              </div>
+              <div class="form-group">
+                <label class="label">
+                  <span class="label-text">Mot de passe</span>
+                </label>
+                <input v-model="registerData.password" type="password" name="password" id="password"
+                  class="input input-bordered w-full max-w-xs" placeholder="*********" />
+              </div>
+              <div class="form-group">
+                <label class="label">
+                  <span class="label-text">Mot de passe de confirmation</span>
+                </label>
+                <input type="password" name="passwordConfirm" id="passwordConfirm" v-model="registerData.confirmPassword"
+                  class="input input-bordered w-full max-w-xs" placeholder="*********" />
+              </div>
+              <div class="form-control mt-6">
+                <button type="submit" class="btn btn-secondary">Register</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

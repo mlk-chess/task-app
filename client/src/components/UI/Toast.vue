@@ -42,9 +42,7 @@ const props = defineProps({
 
 const alertClass = computed(() => "alert alert-" + props.type);
 
-// Display none the toast in 5 seconds 
 setTimeout(() => {
-    document.querySelector('.toast').classList.add('fade');
     document.querySelector('.toast').style.display = 'none';
 }, 5000);
 </script>   
