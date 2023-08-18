@@ -45,7 +45,7 @@ function login() {
       } else {
         loginData.value.error = 'Identifiants incorrects !'
       }
-    })
+    }).catch(e => console.error(e))
 }
 </script>
 
