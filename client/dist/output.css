@@ -2903,6 +2903,16 @@ html {
 }
 
 @media (min-width: 640px) {
+  .sm\:mx-8 {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+
+  .sm\:mx-44 {
+    margin-left: 11rem;
+    margin-right: 11rem;
+  }
+
   .sm\:mr-20 {
     margin-right: 5rem;
   }
@@ -2921,6 +2931,10 @@ html {
 
   .sm\:ml-44 {
     margin-left: 11rem;
+  }
+
+  .sm\:flex {
+    display: flex;
   }
 
   .sm\:flex-col {
@@ -2951,6 +2965,10 @@ html {
 }
 
 @media (min-width: 1024px) {
+  .lg\:m-20 {
+    margin: 5rem;
+  }
+
   .lg\:mr-20 {
     margin-right: 5rem;
   }
