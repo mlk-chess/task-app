@@ -86,7 +86,7 @@ function register() {
       <img src="@/assets/img/Queue-amico.png" alt="Illustration d'inscription" />
     </div>
 
-    <div class="flex-1 ml-20">
+    <div class="flex-1">
       <div class="card w-96 bg-base-100 shadow-xl">
         <div class="card-body">
           <Loading v-if="isLoad" />
