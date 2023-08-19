@@ -18,6 +18,8 @@
     "flowbite": "^1.8.1",
     "js-cookie": "^3.0.1",
     "jwt-decode": "^3.1.2",
+    "sortablejs": "^1.15.0",
+    "sortablejs-vue3": "^1.2.9",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },

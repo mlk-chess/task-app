@@ -10,7 +10,7 @@ const calendarOptions = {
         { title: 'Meeting', start: new Date() }
     ],
     headerToolbar: {
-        left: 'prev,next',
+        left: 'prev,next',  
         center: 'title',
         right: 'timeGridWeek,timeGridDay' // user can switch between the two
     },
