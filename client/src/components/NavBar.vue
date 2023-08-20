@@ -26,7 +26,7 @@
 
     <div v-else class="navbar bg-base-100">
         <div class="navbar-start">
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -38,6 +38,26 @@
                     <li><router-link to="/lists">Listes des tâches</router-link></li>
                     <li><router-link to="/tasks">Tâches</router-link></li>
                 </ul>
+            </div> -->
+
+            <div class="drawer z-50">
+                <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+                <div class="drawer-content">
+                    <label for="my-drawer" class="drawer-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                    </label>
+                </div>
+                <div class="drawer-side">
+                    <label for="my-drawer" class="drawer-overlay"></label>
+                    <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
+                        <li><router-link to="/dashboard">Dashboard</router-link></li>
+                        <li><router-link to="/lists">Listes des tâches</router-link></li>
+                        <li><router-link to="/tasks">Tâches</router-link></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="navbar-center">
@@ -119,7 +139,7 @@ const changeTheme = (e) => {
 
 watch(theme, (newTheme) => {
     document.querySelector("html").setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+    // localStorage.setItem("theme", newTheme);
 });
 
 const token = jsCookie.get('jwt')
@@ -137,10 +157,18 @@ const requestToken = new Request(
 fetch(requestToken)
     .then((response) => {
         if (response.status === 200) {
-            isConnected.value = true
+            isConnected.value = true;
+            return response.json();
         } else {
-            isConnected.value = false
+            return;
         }
+    }).then((data) => {
+        console.log(data)
+        // if (data.data.roles.includes('ROLE_ADMIN')) {
+        //     next()
+        // } else {
+        //     next('/login')
+        // }
     })
 
 const logout = () => {
