@@ -2,27 +2,40 @@
     <NavBar />
 
     <section>
-        <div class="row">
-            <div class="col-3">
-                <h3>Draggable 1</h3>
-                <draggable class="list-group" :list="list1" group="people" @change="log" itemKey="name">
-                    <template #item="{ element, index }">
-                        <div class="list-group-item">{{ element.name }} {{ index }}</div>
-                    </template>
-                </draggable>
+        <div class="flex items-center">
+            <div class="card w-96 bg-base-100 shadow-2xl m-10">
+                <div class="card-body">
+                    <h3 class="card-title">En cours</h3>
+                    <!-- <p>If a dog chews shoes whose shoes does he choose?</p> -->
+                    <draggable class="list-group mt-10" :list="list1" group="people" @change="log" itemKey="name">
+                        <template #item="{ element, index }">
+                            <div class="list-group-item">{{ index }} - {{ element.name }}</div>
+                        </template>
+                    </draggable>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary" @click="add">Ajouter une tâche</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-3">
-                <h3>Draggable 2</h3>
-                <button @click="add"> Add + </button>
-                <draggable class="list-group" :list="list2" group="people" @change="log" itemKey="name">
-                    <template #item="{ element, index }">
-                        <div class="list-group-item">
-                            {{ index }} {{ element.name }}
-                            <button @click="removeItem(index)">Supprimer</button>
-                        </div>
-                    </template>
-                </draggable>
+            <div class="card w-96 bg-base-100 shadow-xl m-10">
+
+                <div class="card-body">
+                    <h3 class="card-title">Terminé</h3>
+                    <!-- <p>If a dog chews shoes whose shoes does he choose?</p> -->
+                    <draggable class="list-group mt-10" :list="list2" group="people" @change="log" itemKey="name">
+                        <template #item="{ element, index }">
+                            <div class="list-group-item">
+                                {{ index }} - {{ element.name }}
+                                <button @click="removeItem(index)">Supprimer</button>
+                            </div>
+                        </template>
+                    </draggable>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary" @click="add">Ajouter une tâche</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
