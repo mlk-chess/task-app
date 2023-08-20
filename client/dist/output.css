@@ -2837,12 +2837,12 @@ html {
   margin: auto;
 }
 
-.m-5 {
-  margin: 1.25rem;
-}
-
 .mb-3 {
   margin-bottom: 0.75rem;
+}
+
+.mb-5 {
+  margin-bottom: 1.25rem;
 }
 
 .ml-10 {
@@ -2859,10 +2859,6 @@ html {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
 }
 
 .flex {
@@ -3141,5 +3137,25 @@ html {
 
   .sm\:flex-col {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 976px) {
+  .lg\:m-20 {
+    margin: 5rem;
+  }
+
+  .lg\:flex-row {
+    flex-direction: row;
+  }
+
+  .lg\:flex-row-reverse {
+    flex-direction: row-reverse;
   }
 }
