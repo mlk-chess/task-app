@@ -8,6 +8,7 @@ import DashboardView from "@/views/DashboardView.vue";
 import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import PasswordForgottenView from "@/views/PasswordForgottenView.vue"
+import ListsTasksView from "@/views/ListsTasksView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,14 +35,6 @@ const router = createRouter({
       }
     },
     {
-      path: "/dashboard",
-      name: "dashboard",
-      component: DashboardView,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
       path: "/confirm-account",
       name: "confirm-account",
       component: ConfirmAccountView,
@@ -57,6 +50,22 @@ const router = createRouter({
       component: PasswordForgottenView,
     },
     {
+      path: "/dashboard",
+      name: "dashboard",
+      component: DashboardView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/lists",
+      name: "lists",
+      component: ListsTasksView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: PageNotFound
     }
@@ -69,79 +78,79 @@ router.beforeEach((to, from, next) => {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-        "https://localhost/api/auth",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + token
-          }
-        });
+      "https://localhost/api/auth",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
 
     fetch(requestToken)
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json()
-          } else {
-            next('/login')
-            throw new Error('Token request failed')
-          }
-        })
-        .then((data) => {
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        } else {
+          next('/login')
+          throw new Error('Token request failed')
+        }
+      })
+      .then((data) => {
+        next()
+      })
+  } else if (to.meta.requiresAuthAdmin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+      "https://localhost/api/auth",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+
+    fetch(requestToken)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        } else {
+          next('/login')
+          throw new Error('Token request failed')
+        }
+      })
+      .then((data) => {
+
+        if (data.data.roles.includes('ROLE_ADMIN')) {
           next()
-        })
-  }else if (to.meta.requiresAuthAdmin) {
+        } else {
+          next('/login')
+        }
+      })
+  } else if (to.meta.requiresLogin) {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-        "https://localhost/api/auth",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + token
-          }
-        });
+      "https://localhost/api/auth",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
 
     fetch(requestToken)
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json()
-          } else {
-            next('/login')
-            throw new Error('Token request failed')
-          }
-        })
-        .then((data) => {
-
-            if (data.data.roles.includes('ROLE_ADMIN')) {
-              next()
-            } else {
-              next('/login')
-            }
-        })
-  }else if (to.meta.requiresLogin) {
-    const token = jsCookie.get('jwt')
-
-    const requestToken = new Request(
-        "https://localhost/api/auth",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + token
-          }
-        });
-
-    fetch(requestToken)
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json()
-          } else {
-            next()
-          }
-        })
-        .then((data) => {
-          next('/')
-        })
-  }else {
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        } else {
+          next()
+        }
+      })
+      .then((data) => {
+        next('/')
+      })
+  } else {
     next()
   }
 })
