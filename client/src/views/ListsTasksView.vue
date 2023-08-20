@@ -6,40 +6,53 @@
             <div class="card w-96 bg-base-100 shadow-2xl m-10">
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
-                    <!-- <p>If a dog chews shoes whose shoes does he choose?</p> -->
-                    <draggable class="list-group mt-10" :list="list1" group="people" @change="log" itemKey="name">
+                    <draggable class="mt-10" :list="list1" group="tasks" @change="log" itemKey="name">
                         <template #item="{ element, index }">
-                            <div class="list-group-item">{{ index }} - {{ element.name }}</div>
+                            <div class="alert mb-5">
+                                <span>{{ element.name }}</span>
+                            </div>
                         </template>
                     </draggable>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-primary" @click="add">Ajouter une tâche</button>
+                        <button class="btn btn-primary" onclick="todo.showModal()">Ajouter une tâche</button>
+                        <Modal id="todo">
+                            <template #header>
+                                Ajouter une tâche à "En cours"
+                            </template>
+                            <template #content>
+                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                            </template>
+                        </Modal>
                     </div>
                 </div>
             </div>
 
             <div class="card w-96 bg-base-100 shadow-xl m-10">
-
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
-                    <!-- <p>If a dog chews shoes whose shoes does he choose?</p> -->
-                    <draggable class="list-group mt-10" :list="list2" group="people" @change="log" itemKey="name">
+                    <draggable class="mt-10" :list="list2" group="tasks" @change="log" itemKey="name">
                         <template #item="{ element, index }">
-                            <div class="list-group-item">
-                                {{ index }} - {{ element.name }}
+                            <div class="alert mb-5 flex justify-between">
+                                <span>{{ element.name }}</span>
                                 <button @click="removeItem(index)">Supprimer</button>
                             </div>
                         </template>
                     </draggable>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-primary" @click="add">Ajouter une tâche</button>
+                        <button class="btn btn-primary" onclick="done.showModal()">Ajouter une tâche</button>
+                        <Modal id="done">
+                            <template #header>
+                                Ajouter une tâche à "Terminé"
+                            </template>
+                            <template #content>
+                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                            </template>
+                        </Modal>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
-
     <Footer />
 </template>
 
@@ -48,6 +61,7 @@ import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import { ref, watch } from "vue";
 import draggable from "vuedraggable";
+import Modal from "../components/UI/Modal.vue";
 
 const list1 = ref([
     { name: "John", id: 1 },
