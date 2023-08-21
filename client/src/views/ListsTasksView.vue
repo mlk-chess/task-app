@@ -2,7 +2,7 @@
     <NavBar />
 
     <section>
-        <div class="flex items-center sm:flex-col md:flex-row">
+        <div class="flex items-center justify-center sm:flex-col md:flex-row">
             <div class="card w-96 bg-base-100 shadow-2xl m-10">
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
@@ -30,11 +30,11 @@
             <div class="card w-96 bg-base-100 shadow-xl m-10">
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
-                    <draggable class="mt-10" :list="list2" group="tasks" @change="log" itemKey="name">
+                    <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
+                        group="tasks" @change="log" itemKey="name">
                         <template #item="{ element, index }">
-                            <div class="alert mb-5 flex justify-between">
+                            <div class="alert mb-5">
                                 <span>{{ element.name }}</span>
-                                <button @click="removeItem(index)">Supprimer</button>
                             </div>
                         </template>
                     </draggable>
@@ -78,7 +78,6 @@ const list2 = ref([
 
 watch(list1.value, (newX) => {
     console.table(newX)
-    console.log(newX[0].name)
 })
 
 const add = () => {
