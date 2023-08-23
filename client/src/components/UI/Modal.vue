@@ -21,7 +21,7 @@ const props = defineProps({
                 <p class="py-4">Press ESC key or click the button below to close</p>
             </slot>
             <div class="modal-action">
-                <button class="btn">Fermer</button>
+                <slot name="actions"></slot>
             </div>
         </form>
     </dialog>

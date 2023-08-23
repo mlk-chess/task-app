@@ -130,26 +130,30 @@ router.beforeEach((to, from, next) => {
   } else if (to.meta.requiresLogin) {
     const token = jsCookie.get('jwt')
 
-    const requestToken = new Request(
-      "https://localhost/api/auth",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      });
+    if (token) {
+      const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
 
-    fetch(requestToken)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json()
-        } else {
-          next()
-        }
-      })
-      .then((data) => {
-        next('/')
-      })
+      fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next()
+          }
+        })
+        .then((data) => {
+          next('/')
+        })
+    }else{
+      next()
+    }
   } else {
     next()
   }
