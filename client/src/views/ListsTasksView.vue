@@ -78,21 +78,19 @@
                                     </h3>
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
-                                            <input type="checkbox" :id="contributor.name" :value="contributor.name" @change="assignTo(taskItemId)"
+                                            <input type="checkbox" :id="contributor.username" :value="contributor.id" @change="assignTo(taskItemId)"
                                                 class="hidden peer" required="">
-                                            <label :for="contributor.name"
+                                            <label :for="contributor.username"
                                                 class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
                                                 <div class="block">
-                                                    <div class="w-full text-lg font-semibold">{{ contributor.name }}</div>
+                                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username }}</p>
                                                 </div>
                                             </label>
                                         </li>
                                     </ul>
-
                                 </form>
                             </template>
                             <template #actions>
-
                                 <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
 
                                 <button class="btn btn-error" @click="removeItemById(taskItemId)">
@@ -123,6 +121,7 @@ import Footer from "../components/Footer.vue";
 import { onMounted, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import Modal from "../components/UI/Modal.vue";
+import jsCookie from 'js-cookie'
 
 const taskItem = ref('');
 const taskItemId = ref(null);
@@ -149,9 +148,9 @@ const list2 = ref([
 //     console.table(newX)
 // })
 
-// watch(list2.value, (newX) => {
-//     console.table(newX);
-// })
+watch(list2.value, (newX) => {
+    console.table(newX);
+})
 
 // watch(taskItem.value, (newX) => {
 //     console.table(newX)
@@ -188,19 +187,31 @@ const contributors = ref([]);
 const assignTo = (e) => {
     const indexToEdit = list2.value.findIndex((item) => item.id === e);
     list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
-    console.table(list2.value[indexToEdit].assignTo);
+    console.table(contributors.value.filter((item) => item.id === e));
 }
+
+onMounted(async () => {
+    console.log()
+    await fetchUsers();
+})
 
 const fetchUsers = async () => {
-    const res = await fetch("https://localhost/api/users");
-    console.log(res);
-    const data = await res.json();
-    contributors.value = data;
-}
+    const token = jsCookie.get('jwt')
+    const requestToken = new Request(
+        "https://localhost/api/users",
+        {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
 
-onMounted(() => {
-    fetchUsers();
-    console.log(contributors.value);
-})
+    fetch(requestToken)
+        .then(response => response.status === 200 && response.json())
+        .then(data => {
+            contributors.value = data["hydra:member"]
+            log(data["hydra:member"])
+        })
+}
 
 </script>
