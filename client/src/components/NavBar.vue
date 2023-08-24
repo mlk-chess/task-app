@@ -139,7 +139,7 @@ const changeTheme = (e) => {
 
 watch(theme, (newTheme) => {
     document.querySelector("html").setAttribute("data-theme", newTheme);
-    // localStorage.setItem("theme", newTheme);
+    localStorage.setItem("theme", newTheme);
 });
 
 const token = jsCookie.get('jwt')
@@ -158,18 +158,19 @@ fetch(requestToken)
     .then((response) => {
         if (response.status === 200) {
             isConnected.value = true;
-            return response.json();
+            // return response.json();
         } else {
             return;
         }
-    }).then((data) => {
-        console.log(data)
-        // if (data.data.roles.includes('ROLE_ADMIN')) {
-        //     next()
-        // } else {
-        //     next('/login')
-        // }
     })
+    // .then((data) => {
+    //     console.log(data)
+    //     // if (data.data.roles.includes('ROLE_ADMIN')) {
+    //     //     next()
+    //     // } else {
+    //     //     next('/login')
+    //     // }
+    // })
 
 const logout = () => {
     jsCookie.remove('jwt')
