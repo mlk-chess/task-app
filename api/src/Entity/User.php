@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -94,6 +96,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
+
+    #[ORM\ManyToMany(targetEntity: ListTask::class, mappedBy: 'contributors')]
+    private Collection $listTasks;
+
+    #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'assignTo')]
+    private Collection $tasks;
+
+    public function __construct()
+    {
+        $this->listTasks = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -191,6 +205,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setToken(?string $token): static
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ListTask>
+     */
+    public function getListTasks(): Collection
+    {
+        return $this->listTasks;
+    }
+
+    public function addListTask(ListTask $listTask): static
+    {
+        if (!$this->listTasks->contains($listTask)) {
+            $this->listTasks->add($listTask);
+            $listTask->addContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListTask(ListTask $listTask): static
+    {
+        if ($this->listTasks->removeElement($listTask)) {
+            $listTask->removeContributor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->addAssignTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) {
+            $task->removeAssignTo($this);
+        }
 
         return $this;
     }
