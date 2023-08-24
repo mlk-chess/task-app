@@ -120,7 +120,7 @@
 <script setup>
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import draggable from "vuedraggable";
 import Modal from "../components/UI/Modal.vue";
 
@@ -145,17 +145,17 @@ const list2 = ref([
     { name: "Les listes de tâches devront être triées par ordre alphabétique.", id: 7, assignTo: []  }
 ]);
 
-watch(list1.value, (newX) => {
-    console.table(newX)
-})
+// watch(list1.value, (newX) => {
+//     console.table(newX)
+// })
 
-watch(list2.value, (newX) => {
-    console.table(newX);
-})
+// watch(list2.value, (newX) => {
+//     console.table(newX);
+// })
 
-watch(taskItem.value, (newX) => {
-    console.table(newX)
-})
+// watch(taskItem.value, (newX) => {
+//     console.table(newX)
+// })
 
 const removeItemById = (e) => {
     log(e)
@@ -183,20 +183,24 @@ const update = (e) => {
     console.log(e);
 }
 
-const contributors = ref([
-    { name: "John", id: 1 },
-    { name: "Joao", id: 2 },
-    { name: "Jean", id: 3 },
-    { name: "Gerard", id: 4 },
-    { name: "Juan", id: 5 },
-    { name: "Edgard", id: 6 },
-    { name: "Johnson", id: 7 }
-]);
+const contributors = ref([]);
 
 const assignTo = (e) => {
     const indexToEdit = list2.value.findIndex((item) => item.id === e);
     list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
     console.table(list2.value[indexToEdit].assignTo);
 }
+
+const fetchUsers = async () => {
+    const res = await fetch("https://localhost/api/users");
+    console.log(res);
+    const data = await res.json();
+    contributors.value = data;
+}
+
+onMounted(() => {
+    fetchUsers();
+    console.log(contributors.value);
+})
 
 </script>
