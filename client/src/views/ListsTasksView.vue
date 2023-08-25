@@ -51,7 +51,29 @@
                 Créer une liste
             </template>
             <template #content>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                <form>
+                    <input v-model="listName" class="mt-10 input input-bordered input-primary w-full max-w-xs" />
+
+                    <!-- <h3 class="mb-5 mt-5 text-lg font-medium">
+                        Inviter des membres
+                    </h3>
+                    <ul class="grid w-full gap-6 md:grid-cols-3">
+                        <li v-for="contributor in contributors">
+                            <input type="checkbox" :id="contributor.username" :value="contributor.id"
+                                @change="assignTo(taskItemId)" class="hidden peer" required="">
+                            <label :for="contributor.username"
+                                class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
+                                <div class="block">
+                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username
+                                    }}</p>
+                                </div>
+                            </label>
+                        </li>
+                    </ul> -->
+                </form>
+            </template>
+            <template #actions>
+                <button class="btn btn-primary" @click="createList()">Créer</button>
             </template>
         </Modal>
 
@@ -67,8 +89,9 @@ import jsCookie from 'js-cookie'
 import Loading from "@/components/UI/Loading.vue"
 import Modal from "../components/UI/Modal.vue";
 
-const lists = ref([])
+const lists = ref([]);
 const isLoad = ref(true);
+const listName = ref('');
 
 onMounted(async () => {
     await fetchUsers();
@@ -89,8 +112,32 @@ const fetchUsers = async () => {
         .then(response => response.status === 200 && response.json())
         .then(data => {
             lists.value = data["hydra:member"]
-            console.table(data["hydra:member"])
         })
+
+    isLoad.value = false;
+}
+
+const createList = async () => {
+    isLoad.value = true;
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/list_tasks",
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+
+            },
+            body: JSON.stringify({
+                name: listName.value
+            }),
+        });
+
+    fetch(requestToken)
+        .then(response => response.json())
+        .then(data => console.log(data))
 
     isLoad.value = false;
 }

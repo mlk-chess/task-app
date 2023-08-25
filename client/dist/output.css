@@ -2104,6 +2104,15 @@ html {
   outline-color: hsl(var(--bc) / 0.2);
 }
 
+.input-primary {
+  --tw-border-opacity: 1;
+  border-color: hsl(var(--p) / var(--tw-border-opacity));
+}
+
+.input-primary:focus {
+  outline-color: hsl(var(--p) / 1);
+}
+
 .input-disabled,
   .input:disabled,
   .input[disabled] {
