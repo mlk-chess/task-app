@@ -8,6 +8,28 @@
                 class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-emerald-500 hover:cursor-pointer duration-300">
                 <div class="card-body">
                     <h2 class="card-title">{{ list.name }}</h2>
+                    <div class="avatar-group -space-x-6">
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-actions justify-end">
                         <button class="btn">Consulter</button>
                     </div>
