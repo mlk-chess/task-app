@@ -7,9 +7,43 @@ use App\Repository\ListTaskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ListTaskRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    security: "is_granted('ROLE_USER')",
+    routePrefix: "api",
+    operations: [
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Get(
+            security: "object.owner == user",
+            securityMessage: 'Sorry, but you are not the list owner.'
+        ),
+        // new Put(
+        //     securityPostDenormalize: "is_granted('ROLE_ADMIN') or (object.owner == user and previous_object.owner == user)", 
+        //     securityPostDenormalizeMessage: 'Sorry, but you are not the actual book owner.'
+        // ),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')", 
+            securityMessage: 'Only admins can add books.'
+        ),
+        new Get(
+            routePrefix: 'api',
+            name: 'get-lists',
+            uriTemplate: '/get-lists',
+            controller: GetListsController::class,
+            read: false
+        )
+    ]
+)]
+#[UniqueEntity('name')]
 class ListTask
 {
     #[ORM\Id]
@@ -25,6 +59,9 @@ class ListTask
 
     #[ORM\OneToMany(mappedBy: 'belongsToList', targetEntity: Task::class)]
     private Collection $tasks;
+
+    #[ORM\ManyToOne(inversedBy: 'ListTasksOwner')]
+    public ?User $owner;
 
     public function __construct()
     {
@@ -99,6 +136,18 @@ class ListTask
                 $task->setBelongsToList(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
