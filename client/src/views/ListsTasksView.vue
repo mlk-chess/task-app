@@ -51,7 +51,7 @@
                 Créer une liste
             </template>
             <template #content>
-                <form @submit="createList">
+                <form @submit.prevent="createList">
                     <input v-model="listName" class="mt-10 input input-bordered input-primary w-full max-w-xs" />
 
                     <h3 class="mb-5 mt-5 text-lg font-medium">
@@ -155,22 +155,30 @@ const createList = async () => {
         });
 
     fetch(requestToken)
-        .then(response => response.status === 201 && response.json())
+        .then(response => response.json())
         .then(data => {
-            if (data === false) {
-                error.value = "Une erreur est survenue ! Réessayez.";
+            if (data.violations) {
+                data.violations[0].propertyPath === "name" ? error.value = "Ce nom de liste existe déjà." : error.value = data.violations[0].message;
                 success.value = null;
-
                 setTimeout(() => {
                     error.value = null
                 }, 5000);
             } else {
                 fetchUsers()
-                success.value = "Liste créée !";
+                success.value = "Liste \"" + listName.value + "\" créée !";
                 setTimeout(() => {
                     success.value = null
                 }, 5000);
-            }
+            } 
+            
+            // else{
+            //     error.value = "Une erreur est survenue ! Réessayez.";
+            //     success.value = null;
+
+            //     setTimeout(() => {
+            //         error.value = null
+            //     }, 5000);
+            // }
         }).finally(() => {
             isLoad.value = false;
         })
