@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Controller\ConfirmAccountController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ResetEmailController;
+use App\Controller\GetContributorsController;
 
 #[ApiResource(
     routePrefix: 'api',
@@ -56,6 +57,13 @@ use App\Controller\ResetEmailController;
             name: 'confirm-account',
             uriTemplate: '/confirm-account/{token}',
             controller: ConfirmAccountController::class,
+            read: false
+        ),
+        new Get(
+            routePrefix: 'api',
+            name: 'get-contributors',
+            uriTemplate: '/get-contributors',
+            controller: GetContributorsController::class,
             read: false
         )
     ],
