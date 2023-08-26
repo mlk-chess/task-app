@@ -146,11 +146,8 @@ const createList = async () => {
     fetch(requestToken)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (data.violations) {
-                data.violations[0].propertyPath === "name" && data.violations[0].message === "This value is already used." 
-                ? error.value = "Ce nom existe déjà." 
-                : error.value = data.violations[0].message;
+                error.value = data.violations[0].message;
                 success.value = null;
                 setTimeout(() => {
                     error.value = null

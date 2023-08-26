@@ -42,7 +42,10 @@ use App\Controller\GetListsController;
         )
     ]
 )]
-#[UniqueEntity('name')]
+#[UniqueEntity(
+    'name',
+    message: 'Ce nom de liste est déjà utilisé.',
+)]
 class ListTask
 {
     #[ORM\Id]
@@ -55,7 +58,9 @@ class ListTask
         pattern: '/^[a-zA-Z]+$/',
         message: 'Le nom de la liste ne doit être composé que de lettres majuscules et minuscules sans contenir d\'espace.',
     )]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'Le nom de la liste ne doit pas être vide.'
+    )]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'listTasks')]

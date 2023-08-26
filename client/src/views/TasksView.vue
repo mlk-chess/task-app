@@ -192,7 +192,6 @@ const assignTo = (e) => {
 }
 
 onMounted(async () => {
-    console.log()
     await fetchUsers();
 })
 
