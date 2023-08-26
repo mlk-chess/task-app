@@ -54,7 +54,7 @@
                 <form @submit="createList">
                     <input v-model="listName" class="mt-10 input input-bordered input-primary w-full max-w-xs" />
 
-                    <!-- <h3 class="mb-5 mt-5 text-lg font-medium">
+                    <h3 class="mb-5 mt-5 text-lg font-medium">
                         Inviter des contributeurs
                     </h3>
                     <ul class="grid w-full gap-6 md:grid-cols-3">
@@ -69,13 +69,18 @@
                                 </div>
                             </label>
                         </li>
-                    </ul> -->
+                    </ul>
                 </form>
             </template>
             <template #actions>
                 <button class="btn btn-primary" @click="createList()">Créer</button>
             </template>
         </Modal>
+
+        <div class="toast">
+            <Toast v-if="success !== null" :message=success type="success" />
+            <Toast v-if="error !== null" :message=error type="error" />
+        </div>
 
         <Footer />
     </template>
@@ -89,11 +94,15 @@ import jsCookie from 'js-cookie'
 import Loading from "@/components/UI/Loading.vue"
 import Modal from "../components/UI/Modal.vue";
 import jwtDecode from "jwt-decode";
+import Toast from "@/components/UI/Toast.vue";
 
 const lists = ref([]);
 const isLoad = ref(true);
 const listName = ref('');
 const contributors = ref([]);
+
+const success = ref(null);
+const error = ref(null);
 
 onMounted(async () => {
     await fetchUsers();
@@ -115,7 +124,6 @@ const fetchUsers = async () => {
         .then(response => response.status === 200 && response.json())
         .then(data => {
             lists.value = data["hydra:member"]["0"]
-            contributors.value = data["hydra:member"]["1"]
         }).finally(() => {
             isLoad.value = false;
         })
@@ -147,11 +155,23 @@ const createList = async () => {
         });
 
     fetch(requestToken)
-        .then(response => response.json())
+        .then(response => response.status === 201 && response.json())
         .then(data => {
-            console.log(data);
-            fetchUsers()
-        }).finally(()=>{
+            if (data === false) {
+                error.value = "Une erreur est survenue ! Réessayez.";
+                success.value = null;
+
+                setTimeout(() => {
+                    error.value = null
+                }, 5000);
+            } else {
+                fetchUsers()
+                success.value = "Liste créée !";
+                setTimeout(() => {
+                    success.value = null
+                }, 5000);
+            }
+        }).finally(() => {
             isLoad.value = false;
         })
 }

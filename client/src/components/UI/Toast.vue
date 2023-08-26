@@ -44,9 +44,5 @@ onMounted(() => {
     document.querySelector('.toast').addEventListener('click', () => {
         document.querySelector('.toast').style.display = 'none';
     });
-
-    setTimeout(() => { 
-        document.querySelector('.toast').style.display = 'none';
-    }, 5000);
 })
 </script>   
