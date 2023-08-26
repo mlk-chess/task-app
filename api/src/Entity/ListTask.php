@@ -13,6 +13,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Controller\GetListsController;
+
 
 #[ORM\Entity(repositoryClass: ListTaskRepository::class)]
 #[ApiResource(
@@ -30,10 +32,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         //     securityPostDenormalize: "is_granted('ROLE_ADMIN') or (object.owner == user and previous_object.owner == user)", 
         //     securityPostDenormalizeMessage: 'Sorry, but you are not the actual book owner.'
         // ),
-        new Post(
-            security: "is_granted('ROLE_ADMIN')", 
-            securityMessage: 'Only admins can add books.'
-        ),
+        new Post(),
         new Get(
             routePrefix: 'api',
             name: 'get-lists',

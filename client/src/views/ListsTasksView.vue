@@ -51,11 +51,11 @@
                 Créer une liste
             </template>
             <template #content>
-                <form>
+                <form @submit="createList">
                     <input v-model="listName" class="mt-10 input input-bordered input-primary w-full max-w-xs" />
 
                     <!-- <h3 class="mb-5 mt-5 text-lg font-medium">
-                        Inviter des membres
+                        Inviter des contributeurs
                     </h3>
                     <ul class="grid w-full gap-6 md:grid-cols-3">
                         <li v-for="contributor in contributors">
@@ -88,19 +88,22 @@ import { onMounted, ref } from "vue";
 import jsCookie from 'js-cookie'
 import Loading from "@/components/UI/Loading.vue"
 import Modal from "../components/UI/Modal.vue";
+import jwtDecode from "jwt-decode";
 
 const lists = ref([]);
 const isLoad = ref(true);
 const listName = ref('');
+const contributors = ref([]);
 
 onMounted(async () => {
     await fetchUsers();
 })
 
 const fetchUsers = async () => {
+    isLoad.value = true;
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://localhost/list_tasks",
+        "https://localhost/api/get-lists",
         {
             method: "GET",
             headers: {
@@ -111,18 +114,25 @@ const fetchUsers = async () => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
-            lists.value = data["hydra:member"]
+            lists.value = data["hydra:member"]["0"]
+            contributors.value = data["hydra:member"]["1"]
+        }).finally(() => {
+            isLoad.value = false;
         })
 
-    isLoad.value = false;
 }
 
 const createList = async () => {
     isLoad.value = true;
     const token = jsCookie.get('jwt')
 
+    let id;
+    if (token !== undefined) {
+        id = jwtDecode(token).id
+    }
+
     const requestToken = new Request(
-        "https://localhost/list_tasks",
+        "https://localhost/api/list_tasks",
         {
             method: "POST",
             headers: {
@@ -131,15 +141,19 @@ const createList = async () => {
 
             },
             body: JSON.stringify({
-                name: listName.value
+                name: listName.value,
+                owner: "/api/users/" + id
             }),
         });
 
     fetch(requestToken)
         .then(response => response.json())
-        .then(data => console.log(data))
-
-    isLoad.value = false;
+        .then(data => {
+            console.log(data);
+            fetchUsers()
+        }).finally(()=>{
+            isLoad.value = false;
+        })
 }
 
 </script>
