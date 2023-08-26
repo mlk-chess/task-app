@@ -57,19 +57,7 @@
                     <h3 class="mb-5 mt-5 text-lg font-medium">
                         Inviter des contributeurs
                     </h3>
-                    <ul class="grid w-full gap-6 md:grid-cols-3">
-                        <li v-for="contributor in contributors">
-                            <input type="checkbox" :id="contributor.username" :value="contributor.id"
-                                @change="assignTo(taskItemId)" class="hidden peer" required="">
-                            <label :for="contributor.username"
-                                class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
-                                <div class="block">
-                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username
-                                    }}</p>
-                                </div>
-                            </label>
-                        </li>
-                    </ul>
+                    <Search />
                 </form>
             </template>
             <template #actions>
@@ -95,6 +83,7 @@ import Loading from "@/components/UI/Loading.vue"
 import Modal from "../components/UI/Modal.vue";
 import jwtDecode from "jwt-decode";
 import Toast from "@/components/UI/Toast.vue";
+import Search from "@/components/Search.vue";
 
 const lists = ref([]);
 const isLoad = ref(true);
@@ -157,8 +146,11 @@ const createList = async () => {
     fetch(requestToken)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.violations) {
-                data.violations[0].propertyPath === "name" ? error.value = "Ce nom de liste existe déjà." : error.value = data.violations[0].message;
+                data.violations[0].propertyPath === "name" && data.violations[0].message === "This value is already used." 
+                ? error.value = "Ce nom existe déjà." 
+                : error.value = data.violations[0].message;
                 success.value = null;
                 setTimeout(() => {
                     error.value = null

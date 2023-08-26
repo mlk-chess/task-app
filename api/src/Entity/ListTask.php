@@ -51,6 +51,11 @@ class ListTask
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        message: 'Le nom de la liste ne doit être composé que de lettres majuscules et minuscules sans contenir d\'espace.',
+    )]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'listTasks')]
