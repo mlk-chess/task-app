@@ -67,7 +67,7 @@ const router = createRouter({
       }
     },
     {
-      path: "/lists/:id/tasks",
+      path: "/list/:id",
       name: "tasks",
       component: TasksView,
       meta: {

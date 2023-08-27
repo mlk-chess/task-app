@@ -5,11 +5,12 @@
 
         <div class="flex m-10 sm:flex-col md:flex-row justify-center flex-wrap">
             <div v-for="list in lists"
-                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-emerald-500 hover:cursor-pointer duration-300">
+                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:cursor-pointer duration-300">
                 <div class="card-body">
                     <h2 class="card-title">{{ list.name }}</h2>
 
-                    <div class="badge badge-outline badge-primary">{{ list.contributors.length }} membres dans ce projet</div>
+                    <div class="badge badge-outline badge-primary">{{ list.contributors.length }} membres dans ce projet
+                    </div>
 
                     <div class="avatar-group -space-x-6">
                         <div class="avatar">
@@ -34,7 +35,14 @@
                         </div>
                     </div>
                     <div class="card-actions justify-end">
-                        <button class="btn">Consulter</button>
+                        <router-link :to="'/list/' + list.id" class="btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Consulter
+                        </router-link>
                     </div>
                 </div>
             </div>
