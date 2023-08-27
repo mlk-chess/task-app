@@ -1,5 +1,4 @@
 <?php
-# api/src/Entity/User.php
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -23,16 +22,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Controller\ConfirmAccountController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ResetEmailController;
+use App\Controller\GetContributorsController;
 
 #[ApiResource(
     routePrefix: 'api',
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
-        new Get(),
+        new Get(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
-        new Delete(),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Patch(processor: UserPasswordHasher::class),
         new Patch(
             routePrefix: '',
@@ -51,6 +57,13 @@ use App\Controller\ResetEmailController;
             name: 'confirm-account',
             uriTemplate: '/confirm-account/{token}',
             controller: ConfirmAccountController::class,
+            read: false
+        ),
+        new Get(
+            routePrefix: 'api',
+            name: 'get-contributors',
+            uriTemplate: '/get-contributors',
+            controller: GetContributorsController::class,
             read: false
         )
     ],
@@ -103,10 +116,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'assignTo')]
     private Collection $tasks;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ListTask::class)]
+    private Collection $ListTasksOwner;
+
     public function __construct()
     {
         $this->listTasks = new ArrayCollection();
         $this->tasks = new ArrayCollection();
+        $this->ListTasksOwner = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -160,7 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
         return array_unique($roles);
     }
     public function setRoles(array $roles): self
@@ -258,6 +274,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->tasks->removeElement($task)) {
             $task->removeAssignTo($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ListTask>
+     */
+    public function getListTasksOwner(): Collection
+    {
+        return $this->ListTasksOwner;
+    }
+
+    public function addListTasksOwner(ListTask $listTasksOwner): static
+    {
+        if (!$this->ListTasksOwner->contains($listTasksOwner)) {
+            $this->ListTasksOwner->add($listTasksOwner);
+            $listTasksOwner->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListTasksOwner(ListTask $listTasksOwner): static
+    {
+        if ($this->ListTasksOwner->removeElement($listTasksOwner)) {
+            // set the owning side to null (unless already changed)
+            if ($listTasksOwner->getOwner() === $this) {
+                $listTasksOwner->setOwner(null);
+            }
         }
 
         return $this;

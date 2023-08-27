@@ -26,7 +26,7 @@
 
     <div v-else class="navbar bg-base-100">
         <div class="navbar-start">
-            <!-- <div class="dropdown">
+            <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -38,9 +38,9 @@
                     <li><router-link to="/lists">Listes des tâches</router-link></li>
                     <li><router-link to="/tasks">Tâches</router-link></li>
                 </ul>
-            </div> -->
+            </div>
 
-            <div class="drawer z-50">
+            <!-- <div class="drawer z-50">
                 <input id="my-drawer" type="checkbox" class="drawer-toggle" />
                 <div class="drawer-content">
                     <label for="my-drawer" class="drawer-button">
@@ -58,7 +58,7 @@
                         <li><router-link to="/tasks">Tâches</router-link></li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="navbar-center">
             <router-link to="/" class="btn btn-ghost normal-case text-xl">

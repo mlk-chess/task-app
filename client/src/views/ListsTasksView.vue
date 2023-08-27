@@ -1,204 +1,119 @@
 <template>
-    <NavBar />
+    <Loading v-if="isLoad" />
+    <template v-else>
+        <NavBar />
 
-    <section>
-        <div class="flex items-center justify-center sm:flex-col md:flex-row">
-            <div class="card w-96 bg-base-100 shadow-2xl m-10">
+        <div class="flex m-10 sm:flex-col md:flex-row justify-center flex-wrap">
+            <div v-for="list in lists"
+                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:cursor-pointer duration-300">
                 <div class="card-body">
-                    <h3 class="card-title">En cours</h3>
-                    <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
-                        group="tasks" @change="log" itemKey="name">
-                        <template #item="{ element, index }">
-                            <div class="alert alert-info mb-5" @click="handleItemClick(element)"
-                                onclick="updateModal.showModal()">
-                                <span>{{ element.name }}</span>
+                    <h2 class="card-title">{{ list.name }}</h2>
+
+                    <div class="badge badge-outline badge-primary">{{ list.contributors.length }} membres dans ce projet
+                    </div>
+
+                    <div class="avatar-group -space-x-6">
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
                             </div>
-                        </template>
-                    </draggable>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <div class="w-12">
+                                <img src="@/assets/img/default-pp.jpeg" />
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-primary" onclick="todo.showModal()">
+                        <router-link :to="'/list/' + list.id" class="btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            Ajouter une carte
-                        </button>
-                        <Modal id="todo">
-                            <template #header>
-                                Ajouter une carte
-                            </template>
-                            <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
-                            </template>
-                        </Modal>
+                            Consulter
+                        </router-link>
                     </div>
                 </div>
             </div>
-
-            <div class="card w-96 bg-base-100 shadow-xl m-10">
-                <div class="card-body">
-                    <h3 class="card-title">Terminé</h3>
-                    <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
-                        group="tasks" @change="log" itemKey="name">
-                        <template #item="{ element, index }">
-                            <div class="alert alert-warning mb-5 hover:opacity-75" @click="handleItemClick(element)"
-                                onclick="updateModal.showModal()">
-                                <span>{{ element.name }}</span>
-                            </div>
-                        </template>
-                    </draggable>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-primary" onclick="done.showModal()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Ajouter une carte
-                        </button>
-                        <Modal id="done">
-                            <template #header>
-                                Ajouter une carte
-                            </template>
-                            <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
-                            </template>
-                        </Modal>
-                        <Modal id="updateModal">
-                            <template #header>
-                                Personnaliser la carte
-                            </template>
-                            <template #content>
-                                <form>
-                                    <textarea v-model="taskItem" class="textarea mt-10"
-                                        style="width: -webkit-fill-available;"></textarea>
-
-                                    <h3 class="mb-5 mt-5 text-lg font-medium">Assigner à:
-                                    </h3>
-                                    <ul class="grid w-full gap-6 md:grid-cols-3">
-                                        <li v-for="contributor in contributors">
-                                            <input type="checkbox" :id="contributor.username" :value="contributor.id" @change="assignTo(taskItemId)"
-                                                class="hidden peer" required="">
-                                            <label :for="contributor.username"
-                                                class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
-                                                <div class="block">
-                                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username }}</p>
-                                                </div>
-                                            </label>
-                                        </li>
-                                    </ul>
-                                </form>
-                            </template>
-                            <template #actions>
-                                <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
-
-                                <button class="btn btn-error" @click="removeItemById(taskItemId)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </button>
-                            </template>
-                        </Modal>
-                    </div>
+            <div onclick="add.showModal()"
+                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-transparent hover:cursor-pointer duration-300">
+                <div class="card-body flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
                 </div>
             </div>
         </div>
-    </section>
-    <Footer />
+        <Modal id="add">
+            <template #header>
+                Créer une liste
+            </template>
+            <template #content>
+                <form @submit.prevent="createList">
+                    <input v-model="listName" class="mt-10 input input-bordered input-primary w-full max-w-xs" />
+
+                    <h3 class="mb-5 mt-5 text-lg font-medium">
+                        Inviter des contributeurs
+                    </h3>
+                    <Search :members="contributors" @update:selectedMembers="updateSelectedMembers" />
+                </form>
+            </template>
+            <template #actions>
+                <button class="btn btn-primary" @click="createList()">Créer</button>
+            </template>
+        </Modal>
+
+        <div class="toast">
+            <Toast v-if="success !== null" :message=success type="success" />
+            <Toast v-if="error !== null" :message=error type="error" />
+        </div>
+
+        <Footer />
+    </template>
 </template>
 
 <script setup>
-import NavBar from "../components/NavBar.vue";
-import Footer from "../components/Footer.vue";
+import NavBar from "@/components/NavBar.vue";
+import Footer from "@/components/Footer.vue";
 import { onMounted, ref, watch } from "vue";
-import draggable from "vuedraggable";
-import Modal from "../components/UI/Modal.vue";
 import jsCookie from 'js-cookie'
+import Loading from "@/components/UI/Loading.vue"
+import Modal from "../components/UI/Modal.vue";
+import jwtDecode from "jwt-decode";
+import Toast from "@/components/UI/Toast.vue";
+import Search from "@/components/Search.vue";
 
-const taskItem = ref('');
-const taskItemId = ref(null);
-
-const handleItemClick = (element) => {
-    taskItem.value = element.name;
-    taskItemId.value = element.id;
-}
-
-const list1 = ref([
-    { name: "Les utilisateurs devront pouvoir créer, modifier et supprimer des tâches.", id: 1, assignTo: [] },
-    { name: "Les tâches devront être affectées à d'autres utilisateurs.", id: 2, assignTo: []  },
-    { name: "Les tâches devront être triées par priorité et date d'échéance.", id: 3, assignTo: []  },
-    { name: "Les tâches devront pouvoir être marquées comme terminées ou en cours.", id: 4, assignTo: [] }
-])
-
-const list2 = ref([
-    { name: "Les utilisateurs devront pouvoir créer, modifier et supprimer des listes de tâches.", id: 5, assignTo: []  },
-    { name: "Les listes de tâches devront pouvoir contenir plusieurs tâches.", id: 6, assignTo: []  },
-    { name: "Les listes de tâches devront être triées par ordre alphabétique.", id: 7, assignTo: []  }
-]);
-
-// watch(list1.value, (newX) => {
-//     console.table(newX)
-// })
-
-watch(list2.value, (newX) => {
-    console.table(newX);
-})
-
-// watch(taskItem.value, (newX) => {
-//     console.table(newX)
-// })
-
-const removeItemById = (e) => {
-    log(e)
-    const indexToRemove = list2.value.findIndex((item) => item.id === e);
-    list2.value.splice(indexToRemove, 1);
-}
-
-const editItem = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].name = taskItem.value
-    console.table(list2.value[indexToEdit].name);
-}
-
-const clone = (el) => {
-    return {
-        name: el.name + " cloned"
-    };
-};
-
-const log = (evt) => {
-    console.table(evt);
-};
-
-const update = (e) => {
-    console.log(e);
-}
-
+const lists = ref([]);
+const isLoad = ref(true);
+const listName = ref('');
 const contributors = ref([]);
+const selectedMembers = ref([]);
 
-const assignTo = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
-    console.table(contributors.value.filter((item) => item.id === e));
-}
+const success = ref(null);
+const error = ref(null);
 
 onMounted(async () => {
-    console.log()
     await fetchUsers();
 })
 
 const fetchUsers = async () => {
+    isLoad.value = true;
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://localhost/api/users",
+        "https://localhost/api/get-lists",
         {
             method: "GET",
             headers: {
@@ -209,9 +124,68 @@ const fetchUsers = async () => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
-            contributors.value = data["hydra:member"]
-            log(data["hydra:member"])
+            lists.value = data["hydra:member"]["0"]
+        }).finally(() => {
+            isLoad.value = false;
         })
 }
+
+const createList = async () => {
+    isLoad.value = true;
+    const token = jsCookie.get('jwt')
+
+    let id;
+    if (token !== undefined) {
+        id = jwtDecode(token).id
+    }
+
+    const requestToken = new Request(
+        "https://localhost/api/list_tasks",
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: listName.value,
+                owner: "/api/users/" + id,
+                contributors: selectedMembers.value
+            }),
+        });
+
+    fetch(requestToken)
+        .then(response => response.json())
+        .then(data => {
+            if (data.violations) {
+                error.value = data.violations[0].message;
+                success.value = null;
+                setTimeout(() => {
+                    error.value = null
+                }, 5000);
+            } else {
+                fetchUsers()
+                success.value = "Liste \"" + listName.value + "\" créée !";
+                setTimeout(() => {
+                    success.value = null
+                }, 5000);
+            }
+
+            // else{
+            //     error.value = "Une erreur est survenue ! Réessayez.";
+            //     success.value = null;
+
+            //     setTimeout(() => {
+            //         error.value = null
+            //     }, 5000);
+            // }
+        }).finally(() => {
+            isLoad.value = false;
+        })
+}
+
+const updateSelectedMembers = (members) => {
+    selectedMembers.value = members;
+};
 
 </script>

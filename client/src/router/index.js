@@ -9,6 +9,7 @@ import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import PasswordForgottenView from "@/views/PasswordForgottenView.vue"
 import ListsTasksView from "@/views/ListsTasksView.vue";
+import TasksView from "@/views/TasksView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +62,14 @@ const router = createRouter({
       path: "/lists",
       name: "lists",
       component: ListsTasksView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/list/:id",
+      name: "tasks",
+      component: TasksView,
       meta: {
         requiresAuth: true
       }
