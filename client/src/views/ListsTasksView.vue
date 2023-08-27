@@ -91,10 +91,6 @@ const listName = ref('');
 const contributors = ref([]);
 const selectedMembers = ref([]);
 
-watch(selectedMembers, () => {
-    console.log(selectedMembers.value);
-});
-
 const success = ref(null);
 const error = ref(null);
 
@@ -121,7 +117,6 @@ const fetchUsers = async () => {
         }).finally(() => {
             isLoad.value = false;
         })
-
 }
 
 const createList = async () => {
@@ -140,7 +135,6 @@ const createList = async () => {
             headers: {
                 "Authorization": "Bearer " + token,
                 "Content-Type": "application/json"
-
             },
             body: JSON.stringify({
                 name: listName.value,
