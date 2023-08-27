@@ -149,9 +149,9 @@ const list2 = ref([
 //     console.table(newX)
 // })
 
-watch(list2.value, (newX) => {
-    console.table(newX);
-})
+// watch(list2.value, (newX) => {
+//     console.table(newX);
+// })
 
 // watch(taskItem.value, (newX) => {
 //     console.table(newX)
