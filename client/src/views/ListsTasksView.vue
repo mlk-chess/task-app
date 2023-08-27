@@ -57,7 +57,7 @@
                     <h3 class="mb-5 mt-5 text-lg font-medium">
                         Inviter des contributeurs
                     </h3>
-                    <Search />
+                    <Search :members="contributors" @update:selectedMembers="updateSelectedMembers" />
                 </form>
             </template>
             <template #actions>
@@ -77,7 +77,7 @@
 <script setup>
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import jsCookie from 'js-cookie'
 import Loading from "@/components/UI/Loading.vue"
 import Modal from "../components/UI/Modal.vue";
@@ -89,6 +89,11 @@ const lists = ref([]);
 const isLoad = ref(true);
 const listName = ref('');
 const contributors = ref([]);
+const selectedMembers = ref([]);
+
+watch(selectedMembers, () => {
+    console.log(selectedMembers.value);
+});
 
 const success = ref(null);
 const error = ref(null);
@@ -139,7 +144,8 @@ const createList = async () => {
             },
             body: JSON.stringify({
                 name: listName.value,
-                owner: "/api/users/" + id
+                owner: "/api/users/" + id,
+                contributors : selectedMembers.value
             }),
         });
 
@@ -158,8 +164,8 @@ const createList = async () => {
                 setTimeout(() => {
                     success.value = null
                 }, 5000);
-            } 
-            
+            }
+
             // else{
             //     error.value = "Une erreur est survenue ! Réessayez.";
             //     success.value = null;
@@ -172,5 +178,9 @@ const createList = async () => {
             isLoad.value = false;
         })
 }
+
+const updateSelectedMembers = (members) => {
+    selectedMembers.value = members;
+};
 
 </script>
