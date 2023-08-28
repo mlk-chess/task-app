@@ -35,6 +35,9 @@ class Task
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
     private Collection $assignTo;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $status = null;
+
     public function __construct()
     {
         $this->assignTo = new ArrayCollection();
@@ -101,6 +104,18 @@ class Task
     public function removeAssignTo(User $assignTo): static
     {
         $this->assignTo->removeElement($assignTo);
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
