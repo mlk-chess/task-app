@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Controller\GetListsController;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: ListTaskRepository::class)]
@@ -24,10 +25,7 @@ use App\Controller\GetListsController;
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Get(
-            security: "object.owner == user",
-            securityMessage: 'Sorry, but you are not the list owner.'
-        ),
+        new Get(),
         // new Put(
         //     securityPostDenormalize: "is_granted('ROLE_ADMIN') or (object.owner == user and previous_object.owner == user)", 
         //     securityPostDenormalizeMessage: 'Sorry, but you are not the actual book owner.'
@@ -38,7 +36,8 @@ use App\Controller\GetListsController;
             name: 'get-lists',
             uriTemplate: '/get-lists',
             controller: GetListsController::class,
-            read: false
+            read: false,
+            normalizationContext: ['groups' => ['listtask']]
         )
     ]
 )]
@@ -51,6 +50,7 @@ class ListTask
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('listtask')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -61,11 +61,14 @@ class ListTask
     #[Assert\NotBlank(
         message: 'Le nom de la liste ne doit pas être vide.'
     )]
+    #[Groups('listtask')]
     private ?string $name = null;
 
+    #[Groups('listtask')]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'listTasks')]
     private Collection $contributors;
 
+    #[Groups('listtask')]
     #[ORM\OneToMany(mappedBy: 'belongsToList', targetEntity: Task::class)]
     private Collection $tasks;
 
