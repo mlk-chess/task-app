@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    routePrefix: 'api'
+)]
 class Task
 {
     #[ORM\Id]
@@ -18,17 +21,25 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups('listtask')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups('listtask')]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $due_date = null;
 
+    #[Groups('listtask')]
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?ListTask $belongsToList = null;
 
+    #[Groups('listtask')]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
     private Collection $assignTo;
+
+    #[Groups('listtask')]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $status = null;
 
     public function __construct()
     {
@@ -96,6 +107,18 @@ class Task
     public function removeAssignTo(User $assignTo): static
     {
         $this->assignTo->removeElement($assignTo);
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

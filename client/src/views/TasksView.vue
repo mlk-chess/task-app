@@ -126,24 +126,15 @@ import jsCookie from 'js-cookie'
 
 const taskItem = ref('');
 const taskItemId = ref(null);
+const list1 = ref([])
+const list2 = ref([]);
+const contributors = ref([]);
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
     taskItemId.value = element.id;
 }
 
-const list1 = ref([
-    { name: "Les utilisateurs devront pouvoir créer, modifier et supprimer des tâches.", id: 1, assignTo: [] },
-    { name: "Les tâches devront être affectées à d'autres utilisateurs.", id: 2, assignTo: [] },
-    { name: "Les tâches devront être triées par priorité et date d'échéance.", id: 3, assignTo: [] },
-    { name: "Les tâches devront pouvoir être marquées comme terminées ou en cours.", id: 4, assignTo: [] }
-])
-
-const list2 = ref([
-    { name: "Les utilisateurs devront pouvoir créer, modifier et supprimer des listes de tâches.", id: 5, assignTo: [] },
-    { name: "Les listes de tâches devront pouvoir contenir plusieurs tâches.", id: 6, assignTo: [] },
-    { name: "Les listes de tâches devront être triées par ordre alphabétique.", id: 7, assignTo: [] }
-]);
 
 // watch(list1.value, (newX) => {
 //     console.table(newX)
@@ -183,8 +174,6 @@ const update = (e) => {
     console.log(e);
 }
 
-const contributors = ref([]);
-
 const assignTo = (e) => {
     const indexToEdit = list2.value.findIndex((item) => item.id === e);
     list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
@@ -198,7 +187,7 @@ onMounted(async () => {
 const fetchUsers = async () => {
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://localhost/api/users",
+        "https://localhost/api/get-lists",
         {
             method: "GET",
             headers: {
@@ -209,8 +198,10 @@ const fetchUsers = async () => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
-            contributors.value = data["hydra:member"]
-            log(data["hydra:member"])
+            contributors.value = data["hydra:member"][1]
+
+            list1.value = data["hydra:member"][0]["tasks"]
+            log(data["hydra:member"]);
         })
 }
 
