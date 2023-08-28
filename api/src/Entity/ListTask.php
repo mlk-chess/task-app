@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Controller\GetListsController;
+use App\Controller\GetSpecificList;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
@@ -37,8 +38,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/get-lists',
             controller: GetListsController::class,
             read: false,
+        ),
+        new Get(
+            routePrefix: 'api',
+            name: 'get-list',
+            uriTemplate: '/get-list/{id}',
+            controller: GetSpecificList::class,
+            read: false,
             normalizationContext: ['groups' => ['listtask']]
-        )
+        ),
     ]
 )]
 #[UniqueEntity(
