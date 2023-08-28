@@ -35,6 +35,7 @@ class Task
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
     private Collection $assignTo;
 
+    #[Groups('listtask')]
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $status = null;
 
