@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
-                        group="tasks" @change="log" itemKey="name">
+                        group="tasks" itemKey="name">
                         <template #item="{ element, index }">
                             <div class="alert alert-info mb-5" @click="handleItemClick(element)"
                                 onclick="updateModal.showModal()">
@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
-                        group="tasks" @change="log" itemKey="name">
+                        group="tasks" itemKey="name">
                         <template #item="{ element, index }">
                             <div class="alert alert-warning mb-5 hover:opacity-75" @click="handleItemClick(element)"
                                 onclick="updateModal.showModal()">
@@ -129,6 +129,7 @@ const taskItemId = ref(null);
 const list1 = ref([])
 const list2 = ref([]);
 const contributors = ref([]);
+const token = jsCookie.get('jwt');
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
@@ -136,17 +137,77 @@ const handleItemClick = (element) => {
 }
 
 
-// watch(list1.value, (newX) => {
-//     console.table(newX)
-// })
+watch(list1.value, (newList, oldList) => {
+    newList.forEach((item) => {
+        if (item.status === 1) {
 
-// watch(list2.value, (newX) => {
-//     console.table(newX);
-// })
+            let id = item['@id']
+            id = id.split("/")
+            id = id[id.length - 1]
 
-// watch(taskItem.value, (newX) => {
-//     console.table(newX)
-// })
+            console.log(id)
+
+            const request = new Request(
+                'https://localhost/api/tasks/'+id,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/merge-patch+json"
+                    },
+                    
+                    body: JSON.stringify({
+                        status: 0
+                    })
+                }
+            )
+            fetch(request)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    })
+
+})
+
+watch(list2.value, (newList, oldList) => {
+    newList.forEach((item) => {
+        if (item.status === 0) {
+
+            let id = item['@id']
+            id = id.split("/")
+            id = id[id.length - 1]
+
+            console.log(id)
+
+            const request = new Request(
+                'https://localhost/api/tasks/' + id,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/merge-patch+json"
+                    },
+
+                    body: JSON.stringify({
+                        status: 1
+                    })
+                }
+            )
+            fetch(request)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    })
+
+})
 
 const removeItemById = (e) => {
     log(e)
@@ -185,23 +246,33 @@ onMounted(async () => {
 })
 
 const fetchUsers = async () => {
+
+    const url = window.location.href;
+    const idList = url.substring(url.lastIndexOf('/') + 1);
+
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://localhost/api/get-lists",
+        "https://localhost/api/get-list/" + idList,
         {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
             }
         });
 
     fetch(requestToken)
-        .then(response => response.status === 200 && response.json())
+        .then(response => response.json())
         .then(data => {
-            contributors.value = data["hydra:member"][1]
+            const tasks = data["hydra:member"][2]
 
-            list1.value = data["hydra:member"][0]["tasks"]
-            log(data["hydra:member"]);
+            tasks.forEach((task) => {
+                if (task.status === 0) {
+                    list1.value.push(task)
+                } else {
+                    list2.value.push(task)
+                }
+            })
         })
 }
 
