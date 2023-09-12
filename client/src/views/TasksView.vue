@@ -133,7 +133,10 @@ const token = jsCookie.get('jwt');
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
-    taskItemId.value = element.id;
+    let id = element["@id"];
+    id = id.split("/");
+    id = id[id.length - 1];
+    taskItemId.value = parseInt(id);
 }
 
 
@@ -148,14 +151,14 @@ watch(list1.value, (newList, oldList) => {
             console.log(id)
 
             const request = new Request(
-                'https://localhost/api/tasks/'+id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
                         "Authorization": "Bearer " + token,
                         "Content-Type": "application/merge-patch+json"
                     },
-                    
+
                     body: JSON.stringify({
                         status: 0
                     })
@@ -180,8 +183,6 @@ watch(list2.value, (newList, oldList) => {
             let id = item['@id']
             id = id.split("/")
             id = id[id.length - 1]
-
-            console.log(id)
 
             const request = new Request(
                 'https://localhost/api/tasks/' + id,
@@ -216,9 +217,31 @@ const removeItemById = (e) => {
 }
 
 const editItem = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].name = taskItem.value
-    console.table(list2.value[indexToEdit].name);
+
+    const request = new Request(
+        'https://localhost/api/tasks/' + e,
+        {
+            method: 'PATCH',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/merge-patch+json"
+            },
+
+            body: JSON.stringify({
+                name: taskItem.value
+            })
+        }
+    )
+    fetch(request)
+        .then(response => {
+            list1.value = [];
+            list2.value = [];
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
 }
 
 const clone = (el) => {
