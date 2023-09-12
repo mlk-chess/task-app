@@ -29,7 +29,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                                <form @submit.prevent="createCard(0)">
+                                    <input v-model="newCard" class="textarea mt-10"
+                                        style="width: -webkit-fill-available;" />
+
+                                    <button type="submit" class="btn btn-primary mt-5">
+                                        Ajouter
+                                    </button>
+                                </form>
                             </template>
                         </Modal>
                     </div>
@@ -62,7 +69,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                                <form @submit.prevent="createCard(1)">
+                                    <input v-model="newCard" class="textarea mt-10"
+                                        style="width: -webkit-fill-available;" />
+
+                                    <button type="submit" class="btn btn-primary mt-5">
+                                        Ajouter
+                                    </button>
+                                </form>
                             </template>
                         </Modal>
                         <Modal id="updateModal">
@@ -129,6 +143,7 @@ const taskItemId = ref(null);
 const list1 = ref([])
 const list2 = ref([]);
 const contributors = ref([]);
+const newCard = ref('');
 const token = jsCookie.get('jwt');
 
 const handleItemClick = (element) => {
@@ -148,7 +163,6 @@ watch(list1.value, (newList, oldList) => {
             id = id.split("/")
             id = id[id.length - 1]
 
-            console.log(id)
 
             const request = new Request(
                 'https://localhost/api/tasks/' + id,
@@ -210,6 +224,38 @@ watch(list2.value, (newList, oldList) => {
 
 })
 
+const createCard = async (status) => {
+
+    const url = window.location.href;
+    const idList = url.substring(url.lastIndexOf('/') + 1);
+
+    const request = new Request(
+        'https://localhost/api/tasks',
+        {
+            method: 'POST',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: newCard.value,
+                belongsToList: "/api/list_tasks/" + idList,
+                status: status
+            })
+        }
+    )
+
+    fetch(request)
+        .then(response => {
+            list1.value = [];
+            list2.value = [];
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
+
 const removeItemById = (e) => {
     log(e)
     const indexToRemove = list2.value.findIndex((item) => item.id === e);
@@ -259,9 +305,7 @@ const update = (e) => {
 }
 
 const assignTo = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
-    console.table(contributors.value.filter((item) => item.id === e));
+    console.log(e)
 }
 
 onMounted(async () => {
@@ -273,7 +317,6 @@ const fetchUsers = async () => {
     const url = window.location.href;
     const idList = url.substring(url.lastIndexOf('/') + 1);
 
-    const token = jsCookie.get('jwt')
     const requestToken = new Request(
         "https://localhost/api/get-list/" + idList,
         {
@@ -296,6 +339,7 @@ const fetchUsers = async () => {
                     list2.value.push(task)
                 }
             })
+            contributors.value = data["hydra:member"][1]
         })
 }
 
