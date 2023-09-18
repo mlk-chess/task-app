@@ -1,9 +1,6 @@
 <?php
-# api/src/Entity/User.php
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -11,6 +8,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
@@ -19,20 +19,53 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Controller\LoginController;
+use App\Controller\ConfirmAccountController;
+use App\Controller\ResetPasswordController;
+use App\Controller\ResetEmailController;
+use App\Controller\GetContributorsController;
 
 #[ApiResource(
     routePrefix: 'api',
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
-        new Get(),
+        new Get(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
-        new Delete(),
-        new Post(processor: UserPasswordHasher::class),
-        new Put(processor: UserPasswordHasher::class),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Patch(processor: UserPasswordHasher::class),
+        new Patch(
+            routePrefix: '',
+            name: 'reset-password',
+            uriTemplate: '/reset/password',
+            controller: ResetPasswordController::class
+        ),
+        new Post(
+            routePrefix: '',
+            name: 'reset-email',
+            uriTemplate: '/reset/email',
+            controller: ResetEmailController::class
+        ),
+        new Get(
+            routePrefix: '',
+            name: 'confirm-account',
+            uriTemplate: '/confirm-account/{token}',
+            controller: ConfirmAccountController::class,
+            read: false
+        ),
+        new Get(
+            routePrefix: 'api',
+            name: 'get-contributors',
+            uriTemplate: '/get-contributors',
+            controller: GetContributorsController::class,
+            read: false
+        )
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
@@ -40,7 +73,7 @@ use App\Controller\LoginController;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
-// #[ApiResource(routePrefix: '/api')]
+#[UniqueEntity('username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['user:read'])]
@@ -57,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
 
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update', 'listtask', 'slisttask'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -69,7 +102,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
-    private array $roles = [];
+    private array $roles = ["ROLE_USER"];
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $status = 0;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
+
+    #[ORM\ManyToMany(targetEntity: ListTask::class, mappedBy: 'contributors')]
+    private Collection $listTasks;
+
+    #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'assignTo')]
+    private Collection $tasks;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ListTask::class)]
+    private Collection $ListTasksOwner;
+
+    public function __construct()
+    {
+        $this->listTasks = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+        $this->ListTasksOwner = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -122,7 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
         return array_unique($roles);
     }
     public function setRoles(array $roles): self
@@ -145,5 +199,113 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): static
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ListTask>
+     */
+    public function getListTasks(): Collection
+    {
+        return $this->listTasks;
+    }
+
+    public function addListTask(ListTask $listTask): static
+    {
+        if (!$this->listTasks->contains($listTask)) {
+            $this->listTasks->add($listTask);
+            $listTask->addContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListTask(ListTask $listTask): static
+    {
+        if ($this->listTasks->removeElement($listTask)) {
+            $listTask->removeContributor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->addAssignTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) {
+            $task->removeAssignTo($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ListTask>
+     */
+    public function getListTasksOwner(): Collection
+    {
+        return $this->ListTasksOwner;
+    }
+
+    public function addListTasksOwner(ListTask $listTasksOwner): static
+    {
+        if (!$this->ListTasksOwner->contains($listTasksOwner)) {
+            $this->ListTasksOwner->add($listTasksOwner);
+            $listTasksOwner->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListTasksOwner(ListTask $listTasksOwner): static
+    {
+        if ($this->ListTasksOwner->removeElement($listTasksOwner)) {
+            // set the owning side to null (unless already changed)
+            if ($listTasksOwner->getOwner() === $this) {
+                $listTasksOwner->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

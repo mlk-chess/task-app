@@ -73,7 +73,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8091:8080
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
