@@ -29,14 +29,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <form @submit.prevent="createCard(0)">
+                                <div>
                                     <input v-model="newCard" class="textarea mt-10"
                                         style="width: -webkit-fill-available;" />
 
-                                    <button type="submit" class="btn btn-primary mt-5">
+                                    <button @click="createCard(0)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
-                                </form>
+                                </div>
                             </template>
                         </Modal>
                     </div>
@@ -69,14 +69,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <form @submit.prevent="createCard(1)">
+                                <div>
                                     <input v-model="newCard" class="textarea mt-10"
                                         style="width: -webkit-fill-available;" />
 
-                                    <button type="submit" class="btn btn-primary mt-5">
+                                    <button @click="createCard(1)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
-                                </form>
+                                </div>
                             </template>
                         </Modal>
                         <Modal id="updateModal">
@@ -180,7 +180,7 @@ watch(list1.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response);
                 })
                 .catch(error => {
                     console.log(error);
@@ -214,7 +214,7 @@ watch(list2.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response);
                 })
                 .catch(error => {
                     console.log(error);
@@ -225,42 +225,78 @@ watch(list2.value, (newList, oldList) => {
 })
 
 const createCard = async (status) => {
+    try {
+        const url = window.location.href;
+        const idList = url.substring(url.lastIndexOf('/') + 1);
 
-    const url = window.location.href;
-    const idList = url.substring(url.lastIndexOf('/') + 1);
+        const request = new Request(
+            'https://localhost/api/tasks',
+            {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: newCard.value,
+                    belongsToList: "/api/list_tasks/" + idList,
+                    status: status
+                })
+            }
+        );
 
-    const request = new Request(
-        'https://localhost/api/tasks',
-        {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: newCard.value,
-                belongsToList: "/api/list_tasks/" + idList,
-                status: status
-            })
+        const response = await fetch(request);
+
+        if (response.ok) {
+            const responseData = await response.json();
+
+            // Ajoutez la nouvelle carte à la liste appropriée en fonction de son statut (status)
+            if (status === 0) {
+                list1.value.push(responseData); // Ajoutez la nouvelle carte à list1
+            } else {
+                list2.value.push(responseData); // Ajoutez la nouvelle carte à list2
+            }
+
+            // Effacez le champ de la nouvelle carte
+            newCard.value = '';
+        } else {
+            console.error("Erreur lors de la création de la carte.");
         }
-    )
-
-    fetch(request)
-        .then(response => {
-            list1.value = [];
-            list2.value = [];
-            fetchUsers();
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la création de la carte.", error);
+    }
 }
 
-const removeItemById = (e) => {
-    log(e)
-    const indexToRemove = list2.value.findIndex((item) => item.id === e);
-    list2.value.splice(indexToRemove, 1);
+
+const removeItemById = async (taskId) => {
+    try {
+        const request = new Request(
+            `https://localhost/api/tasks/${taskId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const response = await fetch(request);
+
+        if (response.ok) {
+            if (list1.value.some(item => item["@id"].endsWith(taskId))) {
+                list1.value = list1.value.filter(item => !item["@id"].endsWith(taskId));
+            } else if (list2.value.some(item => item["@id"].endsWith(taskId))) {
+                list2.value = list2.value.filter(item => !item["@id"].endsWith(taskId));
+            }
+        } else {
+            console.error("Erreur lors de la suppression de l'élément.");
+        }
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la suppression de l'élément.", error);
+    }
 }
+
 
 const editItem = (e) => {
 
@@ -328,18 +364,20 @@ const fetchUsers = async () => {
         });
 
     fetch(requestToken)
-        .then(response => response.json())
+        .then(response => response.status === 200 && response.json())
         .then(data => {
-            const tasks = data["hydra:member"][2]
+            if (data) {
+                const tasks = data["hydra:member"][2]
 
-            tasks.forEach((task) => {
-                if (task.status === 0) {
-                    list1.value.push(task)
-                } else {
-                    list2.value.push(task)
-                }
-            })
-            contributors.value = data["hydra:member"][1]
+                tasks.forEach((task) => {
+                    if (task.status === 0) {
+                        list1.value.push(task)
+                    } else {
+                        list2.value.push(task)
+                    }
+                })
+                contributors.value = data["hydra:member"][1]
+            }
         })
 }
 
