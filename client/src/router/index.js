@@ -87,7 +87,7 @@ router.beforeEach((to, from, next) => {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-      "https://kaitokid.fr/api/auth",
+      "https://localhost/api/auth",
       {
         method: "POST",
         headers: {
@@ -111,7 +111,7 @@ router.beforeEach((to, from, next) => {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-      "https://kaitokid.fr/api/auth",
+      "https://localhost/api/auth",
       {
         method: "POST",
         headers: {
@@ -141,7 +141,7 @@ router.beforeEach((to, from, next) => {
 
     if (token) {
       const requestToken = new Request(
-        "https://kaitokid.fr/api/auth",
+        "https://localhost/api/auth",
         {
           method: "POST",
           headers: {

@@ -20,30 +20,44 @@ class GetListsController extends AbstractController
 
     public function __invoke()
     {
-        if (!$listTask = $this->managerRegistry->getRepository(ListTask::class)) {
+        if (!$listTaskRepository = $this->managerRegistry->getRepository(ListTask::class)) {
             throw $this->createNotFoundException();
         }
 
-        // Get list task of current user 
         $user = $this->getUser();
 
         $current_user = $this->managerRegistry->getRepository(User::class);
-        
-        // Get Id of current user
+
         $current_user = $current_user->findOneBy(['id' => $user->getUserIdentifier()]);
 
-        $listTask = $listTask->findBy(['owner' => $current_user->getId()]);
+        $listTask = $listTaskRepository->findBy(['owner' => $current_user->getId()]);
 
-        // Get contributors of list task
         $contributors = [];
         foreach ($listTask as $list) {
             $contributors[] = $list->getContributors();
         }
+
+        $listTasks = $listTaskRepository->findAll(); // Récupère toutes les listes de tâches
+
+        $filteredLists = [];
+        foreach ($listTasks as $list) {
+            $contributors2 = $list->getContributors();
+
+            // Vérifie si l'utilisateur actuel est parmi les contributeurs
+            foreach ($contributors2 as $contributor) {
+                if ($contributor->getId() === $current_user->getId()) {
+                    $filteredLists[] = $list;
+                }
+            }
+        }
+
         return [
             'listTask' => $listTask,
+            'filteredListTask' => $filteredLists,
             'contributors' => $contributors
         ];
-
-        // return $this->json($listTask);
     }
+
+
+
 }

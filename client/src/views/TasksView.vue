@@ -29,14 +29,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <form @submit.prevent="createCard(0)">
+                                <div>
                                     <input v-model="newCard" class="textarea mt-10"
                                         style="width: -webkit-fill-available;" />
 
-                                    <button type="submit" class="btn btn-primary mt-5">
+                                    <button @click="createCard(0)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
-                                </form>
+                                </div>
                             </template>
                         </Modal>
                     </div>
@@ -69,14 +69,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <form @submit.prevent="createCard(1)">
+                                <div>
                                     <input v-model="newCard" class="textarea mt-10"
                                         style="width: -webkit-fill-available;" />
 
-                                    <button type="submit" class="btn btn-primary mt-5">
+                                    <button @click="createCard(1)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
-                                </form>
+                                </div>
                             </template>
                         </Modal>
                         <Modal id="updateModal">
@@ -84,7 +84,7 @@
                                 Personnaliser la carte
                             </template>
                             <template #content>
-                                <form>
+                                <div>
                                     <textarea v-model="taskItem" class="textarea mt-10"
                                         style="width: -webkit-fill-available;"></textarea>
 
@@ -92,8 +92,9 @@
                                     </h3>
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
-                                            <input type="checkbox" :id="contributor.username" :value="contributor.id"
-                                                @change="assignTo(taskItemId)" class="hidden peer" required="">
+                                            <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
+                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                class="hidden peer" required="">
                                             <label :for="contributor.username"
                                                 class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
                                                 <div class="block">
@@ -103,7 +104,7 @@
                                             </label>
                                         </li>
                                     </ul>
-                                </form>
+                                </div>
                             </template>
                             <template #actions>
                                 <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
@@ -143,6 +144,7 @@ const taskItemId = ref(null);
 const list1 = ref([])
 const list2 = ref([]);
 const contributors = ref([]);
+const taskAssignedContributors = ref([]);
 const newCard = ref('');
 const token = jsCookie.get('jwt');
 
@@ -165,7 +167,7 @@ watch(list1.value, (newList, oldList) => {
 
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -180,7 +182,7 @@ watch(list1.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response);
                 })
                 .catch(error => {
                     console.log(error);
@@ -199,7 +201,7 @@ watch(list2.value, (newList, oldList) => {
             id = id[id.length - 1]
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -214,7 +216,7 @@ watch(list2.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response);
                 })
                 .catch(error => {
                     console.log(error);
@@ -225,70 +227,109 @@ watch(list2.value, (newList, oldList) => {
 })
 
 const createCard = async (status) => {
+    try {
+        const url = window.location.href;
+        const idList = url.substring(url.lastIndexOf('/') + 1);
 
-    const url = window.location.href;
-    const idList = url.substring(url.lastIndexOf('/') + 1);
+        const request = new Request(
+            'https://localhost/api/tasks',
+            {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: newCard.value,
+                    belongsToList: "/api/list_tasks/" + idList,
+                    status: status
+                })
+            }
+        );
 
-    const request = new Request(
-        'https://kaitokid.fr/api/tasks',
-        {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: newCard.value,
-                belongsToList: "/api/list_tasks/" + idList,
-                status: status
-            })
+        const response = await fetch(request);
+
+        if (response.ok) {
+            const responseData = await response.json();
+
+            if (status === 0) {
+                list1.value.push(responseData); 
+            } else {
+                list2.value.push(responseData); 
+            }
+
+            newCard.value = '';
+        } else {
+            console.error("Erreur lors de la création de la carte.");
         }
-    )
-
-    fetch(request)
-        .then(response => {
-            list1.value = [];
-            list2.value = [];
-            fetchUsers();
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la création de la carte.", error);
+    }
 }
 
-const removeItemById = (e) => {
-    log(e)
-    const indexToRemove = list2.value.findIndex((item) => item.id === e);
-    list2.value.splice(indexToRemove, 1);
-}
 
-const editItem = (e) => {
+const removeItemById = async (taskId) => {
+    try {
+        const request = new Request(
+            `https://localhost/api/tasks/${taskId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
 
-    const request = new Request(
-        'https://kaitokid.fr/api/tasks/' + e,
-        {
-            method: 'PATCH',
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/merge-patch+json"
-            },
+        const response = await fetch(request);
 
-            body: JSON.stringify({
-                name: taskItem.value
-            })
+        if (response.ok) {
+            if (list1.value.some(item => item["@id"].endsWith(taskId))) {
+                list1.value = list1.value.filter(item => !item["@id"].endsWith(taskId));
+            } else if (list2.value.some(item => item["@id"].endsWith(taskId))) {
+                list2.value = list2.value.filter(item => !item["@id"].endsWith(taskId));
+            }
+        } else {
+            console.error("Erreur lors de la suppression de l'élément.");
         }
-    )
-    fetch(request)
-        .then(response => {
-            list1.value = [];
-            list2.value = [];
-            fetchUsers();
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la suppression de l'élément.", error);
+    }
 }
+
+
+const editItem = async (taskId) => {
+    try {
+        const request = new Request(
+            `https://localhost/api/tasks/${taskId}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/merge-patch+json"
+                },
+                body: JSON.stringify({
+                    name: taskItem.value
+                })
+            }
+        );
+
+        const response = await fetch(request);
+
+        if (response.ok) {
+            const updatedItem = list1.value.find(item => item["@id"].endsWith(taskId));
+            if (updatedItem) {
+                updatedItem.name = taskItem.value;
+            }
+
+        } else {
+            console.error("Erreur lors de la mise à jour de la tâche.");
+        }
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la mise à jour de la tâche.", error);
+    }
+};
+
 
 const clone = (el) => {
     return {
@@ -304,9 +345,37 @@ const update = (e) => {
     console.log(e);
 }
 
-const assignTo = (e) => {
-    console.log(e)
-}
+const assignTo = async (taskId, contributorId, isChecked) => {
+    const request = new Request(
+        `https://localhost/api/tasks/${taskId}`,
+        {
+            method: 'PATCH',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/merge-patch+json"
+            },
+            body: JSON.stringify({
+                assignTo: isChecked
+                    ? [...taskAssignedContributors.value, contributorId]
+                    : taskAssignedContributors.value.filter(id => id !== contributorId)
+            })
+        }
+    );
+
+    const response = await fetch(request);
+
+    if (response.ok) {
+        if (isChecked) {
+            taskAssignedContributors.value.push(contributorId);
+        } else {
+            taskAssignedContributors.value = taskAssignedContributors.value.filter(id => id !== contributorId);
+        }
+    } else {
+        console.error("Erreur lors de la modification de l'attribution.");
+    }
+};
+
+
 
 onMounted(async () => {
     await fetchUsers();
@@ -318,7 +387,7 @@ const fetchUsers = async () => {
     const idList = url.substring(url.lastIndexOf('/') + 1);
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/get-list/" + idList,
+        "https://localhost/api/get-list/" + idList,
         {
             method: "GET",
             headers: {
@@ -328,18 +397,20 @@ const fetchUsers = async () => {
         });
 
     fetch(requestToken)
-        .then(response => response.json())
+        .then(response => response.status === 200 && response.json())
         .then(data => {
-            const tasks = data["hydra:member"][2]
+            if (data) {
+                const tasks = data["hydra:member"][2]
 
-            tasks.forEach((task) => {
-                if (task.status === 0) {
-                    list1.value.push(task)
-                } else {
-                    list2.value.push(task)
-                }
-            })
-            contributors.value = data["hydra:member"][1]
+                tasks.forEach((task) => {
+                    if (task.status === 0) {
+                        list1.value.push(task)
+                    } else {
+                        list2.value.push(task)
+                    }
+                })
+                contributors.value = data["hydra:member"][1]
+            }
         })
 }
 

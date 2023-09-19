@@ -26,7 +26,7 @@ function login() {
   }
 
   const requestLogin = new Request(
-    "https://kaitokid.fr/api/login",
+    "https://localhost/api/login",
     {
       method: "POST",
       body: JSON.stringify({

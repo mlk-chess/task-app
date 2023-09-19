@@ -17,7 +17,7 @@ function newLink() {
     if (data.value.email === null)
         data.value.error = 'Vous devez renseigner votre adresse email'
     else {
-        const reset = new Request(`https://kaitokid.fr/reset/email`, {
+        const reset = new Request(`https://localhost/reset/email`, {
             method: 'POST',
             body: JSON.stringify({
                 email: data.value.email,
