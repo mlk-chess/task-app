@@ -34,7 +34,7 @@ class ResetEmailController extends AbstractController
         $email = ApiMailerService::send_email(
             $user->getEmail(),
             "Réinitialisation de votre compte",
-            'Bonjour, voici le lien réinitialiser votre compte : <a href="localhost/reset-password?token=' . $token . '">réinitialiser mon compte</a>',
+            'Bonjour, voici le lien réinitialiser votre compte : <a href="https://task-app-sigma-ten.vercel.app/reset-password?token=' . $token . '">réinitialiser mon compte</a>',
         );
 
         $this->mailer->send($email);
