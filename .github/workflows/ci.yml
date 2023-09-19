@@ -38,8 +38,8 @@ jobs:
       -
         name: Start services
         run: |
-          docker compose up --wait
-          docker compose logs php
+          docker compose build --no-cache
+          docker compose up --force-recreate --wait
       -
         name: Check HTTP reachability
         run: curl -v -o /dev/null http://localhost
