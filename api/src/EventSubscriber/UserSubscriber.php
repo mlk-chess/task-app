@@ -38,7 +38,7 @@ use Symfony\Component\Mailer\MailerInterface;
             $email = ApiMailerService::send_email(
                                 $user->getEmail(),
                                 "Création de votre compte",
-                                'Bonjour, voici le lien pour valider votre compte : <a href="localhost:8081/confirm-account?token=' . $token . '">valider mon compte</a>',
+                'Bonjour, voici le lien pour valider votre compte : <a href="https://task-app-sigma-ten.vercel.app/confirm-account?token=' . $token . '">valider mon compte</a>',
                             );
 
             $this->mailer->send($email);
