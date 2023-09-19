@@ -26,7 +26,7 @@ function resetPassword() {
   } else if (data.value.password !== data.value.passwordConfirm) {
     data.value.error = 'Les mots de passe ne correspondent pas'
   } else {
-    const reset = new Request(`https://localhost/reset/password`, {
+    const reset = new Request(`https://kaitokid.fr/reset/password`, {
       method: 'PATCH',
       body: JSON.stringify({
         password: data.value.password,
