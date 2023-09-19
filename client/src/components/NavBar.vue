@@ -146,7 +146,7 @@ const token = jsCookie.get('jwt')
 const isConnected = ref(false)
 
 const requestToken = new Request(
-    "https://kaitokid.fr/api/auth",
+    "https://localhost/api/auth",
     {
         method: "POST",
         headers: {

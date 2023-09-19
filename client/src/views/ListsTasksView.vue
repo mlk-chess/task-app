@@ -113,7 +113,7 @@ const fetchUsers = async () => {
     isLoad.value = true;
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://kaitokid.fr/api/get-lists",
+        "https://localhost/api/get-lists",
         {
             method: "GET",
             headers: {
@@ -122,9 +122,10 @@ const fetchUsers = async () => {
         });
 
     fetch(requestToken)
-        .then(response => response.status === 200 && response.json())
+        .then(response => response.json())
         .then(data => {
-            lists.value = data["hydra:member"]["0"]
+            lists.value = data["hydra:member"]["0"].concat(data["hydra:member"]["1"])
+            contributors.value = data["hydra:member"]["2"]
         }).finally(() => {
             isLoad.value = false;
         })
@@ -140,7 +141,7 @@ const createList = async () => {
     }
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/list_tasks",
+        "https://localhost/api/list_tasks",
         {
             method: "POST",
             headers: {
