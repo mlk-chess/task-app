@@ -84,7 +84,7 @@
                                 Personnaliser la carte
                             </template>
                             <template #content>
-                                <form>
+                                <div>
                                     <textarea v-model="taskItem" class="textarea mt-10"
                                         style="width: -webkit-fill-available;"></textarea>
 
@@ -92,8 +92,9 @@
                                     </h3>
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
-                                            <input type="checkbox" :id="contributor.username" :value="contributor.id"
-                                                @change="assignTo(taskItemId)" class="hidden peer" required="">
+                                            <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
+                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                class="hidden peer" required="">
                                             <label :for="contributor.username"
                                                 class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
                                                 <div class="block">
@@ -103,7 +104,7 @@
                                             </label>
                                         </li>
                                     </ul>
-                                </form>
+                                </div>
                             </template>
                             <template #actions>
                                 <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
@@ -143,6 +144,7 @@ const taskItemId = ref(null);
 const list1 = ref([])
 const list2 = ref([]);
 const contributors = ref([]);
+const taskAssignedContributors = ref([]);
 const newCard = ref('');
 const token = jsCookie.get('jwt');
 
@@ -250,14 +252,12 @@ const createCard = async (status) => {
         if (response.ok) {
             const responseData = await response.json();
 
-            // Ajoutez la nouvelle carte à la liste appropriée en fonction de son statut (status)
             if (status === 0) {
-                list1.value.push(responseData); // Ajoutez la nouvelle carte à list1
+                list1.value.push(responseData); 
             } else {
-                list2.value.push(responseData); // Ajoutez la nouvelle carte à list2
+                list2.value.push(responseData); 
             }
 
-            // Effacez le champ de la nouvelle carte
             newCard.value = '';
         } else {
             console.error("Erreur lors de la création de la carte.");
@@ -298,33 +298,38 @@ const removeItemById = async (taskId) => {
 }
 
 
-const editItem = (e) => {
+const editItem = async (taskId) => {
+    try {
+        const request = new Request(
+            `https://localhost/api/tasks/${taskId}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/merge-patch+json"
+                },
+                body: JSON.stringify({
+                    name: taskItem.value
+                })
+            }
+        );
 
-    const request = new Request(
-        'https://localhost/api/tasks/' + e,
-        {
-            method: 'PATCH',
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/merge-patch+json"
-            },
+        const response = await fetch(request);
 
-            body: JSON.stringify({
-                name: taskItem.value
-            })
+        if (response.ok) {
+            const updatedItem = list1.value.find(item => item["@id"].endsWith(taskId));
+            if (updatedItem) {
+                updatedItem.name = taskItem.value;
+            }
+
+        } else {
+            console.error("Erreur lors de la mise à jour de la tâche.");
         }
-    )
-    fetch(request)
-        .then(response => {
-            list1.value = [];
-            list2.value = [];
-            fetchUsers();
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    } catch (error) {
+        console.error("Une erreur s'est produite lors de la mise à jour de la tâche.", error);
+    }
+};
 
-}
 
 const clone = (el) => {
     return {
@@ -340,9 +345,37 @@ const update = (e) => {
     console.log(e);
 }
 
-const assignTo = (e) => {
-    console.log(e)
-}
+const assignTo = async (taskId, contributorId, isChecked) => {
+    const request = new Request(
+        `https://localhost/api/tasks/${taskId}`,
+        {
+            method: 'PATCH',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/merge-patch+json"
+            },
+            body: JSON.stringify({
+                assignTo: isChecked
+                    ? [...taskAssignedContributors.value, contributorId]
+                    : taskAssignedContributors.value.filter(id => id !== contributorId)
+            })
+        }
+    );
+
+    const response = await fetch(request);
+
+    if (response.ok) {
+        if (isChecked) {
+            taskAssignedContributors.value.push(contributorId);
+        } else {
+            taskAssignedContributors.value = taskAssignedContributors.value.filter(id => id !== contributorId);
+        }
+    } else {
+        console.error("Erreur lors de la modification de l'attribution.");
+    }
+};
+
+
 
 onMounted(async () => {
     await fetchUsers();
