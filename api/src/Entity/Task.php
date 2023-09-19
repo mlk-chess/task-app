@@ -21,23 +21,23 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups('listtask')]
+    #[Groups(['listtask', 'slisttask'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups('listtask')]
+    #[Groups(['listtask', 'slisttask'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $due_date = null;
 
-    #[Groups('listtask')]
+    #[Groups(['listtask', 'slisttask'])]
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?ListTask $belongsToList = null;
 
-    #[Groups('listtask')]
+    #[Groups(['listtask', 'slisttask'])]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
     private Collection $assignTo;
 
-    #[Groups('listtask')]
+    #[Groups(['listtask', 'slisttask'])]
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $status = null;
 

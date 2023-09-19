@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
-                        group="tasks" @change="log" itemKey="name">
+                        group="tasks" itemKey="name">
                         <template #item="{ element, index }">
                             <div class="alert alert-info mb-5" @click="handleItemClick(element)"
                                 onclick="updateModal.showModal()">
@@ -29,7 +29,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                                <form @submit.prevent="createCard(0)">
+                                    <input v-model="newCard" class="textarea mt-10"
+                                        style="width: -webkit-fill-available;" />
+
+                                    <button type="submit" class="btn btn-primary mt-5">
+                                        Ajouter
+                                    </button>
+                                </form>
                             </template>
                         </Modal>
                     </div>
@@ -40,7 +47,7 @@
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
-                        group="tasks" @change="log" itemKey="name">
+                        group="tasks" itemKey="name">
                         <template #item="{ element, index }">
                             <div class="alert alert-warning mb-5 hover:opacity-75" @click="handleItemClick(element)"
                                 onclick="updateModal.showModal()">
@@ -62,7 +69,14 @@
                                 Ajouter une carte
                             </template>
                             <template #content>
-                                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+                                <form @submit.prevent="createCard(1)">
+                                    <input v-model="newCard" class="textarea mt-10"
+                                        style="width: -webkit-fill-available;" />
+
+                                    <button type="submit" class="btn btn-primary mt-5">
+                                        Ajouter
+                                    </button>
+                                </form>
                             </template>
                         </Modal>
                         <Modal id="updateModal">
@@ -129,24 +143,118 @@ const taskItemId = ref(null);
 const list1 = ref([])
 const list2 = ref([]);
 const contributors = ref([]);
+const newCard = ref('');
+const token = jsCookie.get('jwt');
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
-    taskItemId.value = element.id;
+    let id = element["@id"];
+    id = id.split("/");
+    id = id[id.length - 1];
+    taskItemId.value = parseInt(id);
 }
 
 
-// watch(list1.value, (newX) => {
-//     console.table(newX)
-// })
+watch(list1.value, (newList, oldList) => {
+    newList.forEach((item) => {
+        if (item.status === 1) {
 
-// watch(list2.value, (newX) => {
-//     console.table(newX);
-// })
+            let id = item['@id']
+            id = id.split("/")
+            id = id[id.length - 1]
 
-// watch(taskItem.value, (newX) => {
-//     console.table(newX)
-// })
+
+            const request = new Request(
+                'https://localhost/api/tasks/' + id,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/merge-patch+json"
+                    },
+
+                    body: JSON.stringify({
+                        status: 0
+                    })
+                }
+            )
+            fetch(request)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    })
+
+})
+
+watch(list2.value, (newList, oldList) => {
+    newList.forEach((item) => {
+        if (item.status === 0) {
+
+            let id = item['@id']
+            id = id.split("/")
+            id = id[id.length - 1]
+
+            const request = new Request(
+                'https://localhost/api/tasks/' + id,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/merge-patch+json"
+                    },
+
+                    body: JSON.stringify({
+                        status: 1
+                    })
+                }
+            )
+            fetch(request)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    })
+
+})
+
+const createCard = async (status) => {
+
+    const url = window.location.href;
+    const idList = url.substring(url.lastIndexOf('/') + 1);
+
+    const request = new Request(
+        'https://localhost/api/tasks',
+        {
+            method: 'POST',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: newCard.value,
+                belongsToList: "/api/list_tasks/" + idList,
+                status: status
+            })
+        }
+    )
+
+    fetch(request)
+        .then(response => {
+            list1.value = [];
+            list2.value = [];
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
 
 const removeItemById = (e) => {
     log(e)
@@ -155,9 +263,31 @@ const removeItemById = (e) => {
 }
 
 const editItem = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].name = taskItem.value
-    console.table(list2.value[indexToEdit].name);
+
+    const request = new Request(
+        'https://localhost/api/tasks/' + e,
+        {
+            method: 'PATCH',
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/merge-patch+json"
+            },
+
+            body: JSON.stringify({
+                name: taskItem.value
+            })
+        }
+    )
+    fetch(request)
+        .then(response => {
+            list1.value = [];
+            list2.value = [];
+            fetchUsers();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
 }
 
 const clone = (el) => {
@@ -175,9 +305,7 @@ const update = (e) => {
 }
 
 const assignTo = (e) => {
-    const indexToEdit = list2.value.findIndex((item) => item.id === e);
-    list2.value[indexToEdit].assignTo.push(contributors.value.filter((item) => item.id === e));
-    console.table(contributors.value.filter((item) => item.id === e));
+    console.log(e)
 }
 
 onMounted(async () => {
@@ -185,23 +313,33 @@ onMounted(async () => {
 })
 
 const fetchUsers = async () => {
-    const token = jsCookie.get('jwt')
+
+    const url = window.location.href;
+    const idList = url.substring(url.lastIndexOf('/') + 1);
+
     const requestToken = new Request(
-        "https://localhost/api/get-lists",
+        "https://localhost/api/get-list/" + idList,
         {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
             }
         });
 
     fetch(requestToken)
-        .then(response => response.status === 200 && response.json())
+        .then(response => response.json())
         .then(data => {
-            contributors.value = data["hydra:member"][1]
+            const tasks = data["hydra:member"][2]
 
-            list1.value = data["hydra:member"][0]["tasks"]
-            log(data["hydra:member"]);
+            tasks.forEach((task) => {
+                if (task.status === 0) {
+                    list1.value.push(task)
+                } else {
+                    list2.value.push(task)
+                }
+            })
+            contributors.value = data["hydra:member"][1]
         })
 }
 

@@ -38,6 +38,14 @@ class GetSpecificList extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->json($list);
+        // Get tasks
+        $tasks = $list->getTasks();
+        
+
+        return [
+            'list' => $list,
+            'contributors' => $contributors,
+            'tasks' => $tasks ?? [],
+        ];
     }
 }

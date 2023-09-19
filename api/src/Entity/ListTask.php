@@ -38,6 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/get-lists',
             controller: GetListsController::class,
             read: false,
+            normalizationContext: ['groups' => ['listtask']]
         ),
         new Get(
             routePrefix: 'api',
@@ -45,7 +46,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/get-list/{id}',
             controller: GetSpecificList::class,
             read: false,
-            normalizationContext: ['groups' => ['listtask']]
+            normalizationContext: ['groups' => ['slisttask']]
         ),
     ]
 )]
@@ -58,7 +59,7 @@ class ListTask
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('listtask')]
+    #[Groups('listtask', 'slisttask')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -69,17 +70,18 @@ class ListTask
     #[Assert\NotBlank(
         message: 'Le nom de la liste ne doit pas être vide.'
     )]
-    #[Groups('listtask')]
+    #[Groups('listtask', 'slisttask')]
     private ?string $name = null;
 
-    #[Groups('listtask')]
+    #[Groups('listtask', 'slisttask')]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'listTasks')]
     private Collection $contributors;
 
-    #[Groups('listtask')]
+    #[Groups('listtask', 'slisttask')]
     #[ORM\OneToMany(mappedBy: 'belongsToList', targetEntity: Task::class)]
     private Collection $tasks;
 
+    #[Groups('listtask', 'slisttask')]
     #[ORM\ManyToOne(inversedBy: 'ListTasksOwner')]
     public ?User $owner;
 
