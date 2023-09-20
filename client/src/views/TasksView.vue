@@ -2,6 +2,26 @@
     <NavBar />
 
     <section>
+
+    </section>
+
+    <section>
+
+        <ul class="steps flex justify-center">
+            <li v-for="contributor in contributors" class="step step-primary">
+                <div class="list-item-content">
+                    <div class="list-item-title">
+                        {{ contributor.username }}
+                    </div>
+                    <div class="list-item-subtitle">
+                        {{ contributor.email }}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <section>
         <div class="flex justify-center sm:flex-col md:flex-row">
             <div class="card w-96 bg-base-100 shadow-2xl m-10">
                 <div class="card-body">
@@ -9,10 +29,20 @@
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
                         group="tasks" itemKey="name">
                         <template #item="{ element, index }">
-                            <div class="alert alert-info mb-5" @click="handleItemClick(element)"
+                            <div class="alert alert-info mb-5 flex justify-between" @click="handleItemClick(element)"
                                 onclick="updateModal.showModal()">
                                 <span>{{ element.name }}</span>
+                                <div class="-space-x-6">
+                                    <div class="avatar">
+                                        <div v-for="contributor in element.assignTo"
+                                            class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-semibold flex justify-center items-center">
+                                            <span class="flex items-center justify-center w-full h-full">{{
+                                                contributor.username[0] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
                         </template>
                     </draggable>
                     <div class="card-actions justify-end">
@@ -49,9 +79,18 @@
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
                         group="tasks" itemKey="name">
                         <template #item="{ element, index }">
-                            <div class="alert alert-warning mb-5 hover:opacity-75" @click="handleItemClick(element)"
-                                onclick="updateModal.showModal()">
+                            <div class="alert alert-warning mb-5 hover:opacity-75 flex justify-between"
+                                @click="handleItemClick(element)" onclick="updateModal.showModal()">
                                 <span>{{ element.name }}</span>
+                                <div class="-space-x-6">
+                                    <div class="avatar">
+                                        <div v-for="contributor in element.assignTo"
+                                            class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-semibold flex justify-center items-center">
+                                            <span class="flex items-center justify-center w-full h-full">{{
+                                                contributor.username[0] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </draggable>
@@ -88,13 +127,17 @@
                                     <textarea v-model="taskItem" class="textarea mt-10"
                                         style="width: -webkit-fill-available;"></textarea>
 
-                                    <h3 class="mb-5 mt-5 text-lg font-medium">Assigner à:
-                                    </h3>
+                                    <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
+
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
                                                 @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
-                                                class="hidden peer" required="">
+                                                class="hidden peer" required=""
+                                                :checked="taskAssignedContributors.includes(contributor['@id'])" />
+
+
+
                                             <label :for="contributor.username"
                                                 class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
                                                 <div class="block">
@@ -104,23 +147,35 @@
                                             </label>
                                         </li>
                                     </ul>
+
+                                    <div class="mt-5">
+                                        <label class="block text-sm">
+                                            <span class="text-gray-700 dark:text-gray-400">Date d'échéance</span>
+                                            <input type="datetime-local"
+                                                class="mt-1 block w-full rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                                                v-model="dateend" />
+                                            {{ dateend }}
+                                        </label>
+                                    </div>
                                 </div>
                             </template>
                             <template #actions>
-                                <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
+                                <div class="flex">
+                                    <button class="btn btn-secondary" @click="editItem(taskItemId)">Modifier</button>
 
-                                <button class="btn btn-error" @click="removeItemById(taskItemId)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </button>
+                                    <button class="btn btn-error" @click="removeItemById(taskItemId)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path
+                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                            </path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                    </button>
+                                </div>
                             </template>
                         </Modal>
                     </div>
@@ -147,6 +202,7 @@ const contributors = ref([]);
 const taskAssignedContributors = ref([]);
 const newCard = ref('');
 const token = jsCookie.get('jwt');
+const dateend = ref(null);
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
@@ -154,6 +210,26 @@ const handleItemClick = (element) => {
     id = id.split("/");
     id = id[id.length - 1];
     taskItemId.value = parseInt(id);
+
+    const requestToken = new Request(
+        "https://localhost/api/tasks/" + taskItemId.value,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        });
+
+    fetch(requestToken)
+        .then(response => response.status === 200 && response.json())
+        .then(data => {
+            console.log(data)
+            if (data) {
+                taskAssignedContributors.value = data.assignTo
+                dateend.value = data.due_date
+            }
+        })
 }
 
 
@@ -253,9 +329,9 @@ const createCard = async (status) => {
             const responseData = await response.json();
 
             if (status === 0) {
-                list1.value.push(responseData); 
+                list1.value.push(responseData);
             } else {
-                list2.value.push(responseData); 
+                list2.value.push(responseData);
             }
 
             newCard.value = '';
@@ -300,6 +376,8 @@ const removeItemById = async (taskId) => {
 
 const editItem = async (taskId) => {
     try {
+        await fetchUsers();
+        console.log(dateend.value)
         const request = new Request(
             `https://localhost/api/tasks/${taskId}`,
             {
@@ -309,7 +387,8 @@ const editItem = async (taskId) => {
                     "Content-Type": "application/merge-patch+json"
                 },
                 body: JSON.stringify({
-                    name: taskItem.value
+                    name: taskItem.value,
+                    due_date: dateend.value
                 })
             }
         );
@@ -401,6 +480,9 @@ const fetchUsers = async () => {
         .then(data => {
             if (data) {
                 const tasks = data["hydra:member"][2]
+
+                list1.value = []
+                list2.value = []
 
                 tasks.forEach((task) => {
                     if (task.status === 0) {
