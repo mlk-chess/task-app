@@ -127,8 +127,8 @@
                                     <textarea v-model="taskItem" class="textarea mt-10"
                                         style="width: -webkit-fill-available;"></textarea>
 
-                                    <h3 class="mb-5 mt-5 text-lg font-medium">Assigner à:
-                                    </h3>
+                                    <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
+
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
@@ -147,6 +147,16 @@
                                             </label>
                                         </li>
                                     </ul>
+
+                                    <div class="mt-5">
+                                        <label class="block text-sm">
+                                            <span class="text-gray-700 dark:text-gray-400">Date d'échéance</span>
+                                            <input type="datetime-local"
+                                                class="mt-1 block w-full rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                                                v-model="dateend" />
+                                            {{ dateend }}
+                                        </label>
+                                    </div>
                                 </div>
                             </template>
                             <template #actions>
@@ -192,6 +202,7 @@ const contributors = ref([]);
 const taskAssignedContributors = ref([]);
 const newCard = ref('');
 const token = jsCookie.get('jwt');
+const dateend = ref(null);
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
@@ -200,7 +211,7 @@ const handleItemClick = (element) => {
     id = id[id.length - 1];
     taskItemId.value = parseInt(id);
 
-        const requestToken = new Request(
+    const requestToken = new Request(
         "https://localhost/api/tasks/" + taskItemId.value,
         {
             method: "GET",
@@ -213,8 +224,10 @@ const handleItemClick = (element) => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
+            console.log(data)
             if (data) {
                 taskAssignedContributors.value = data.assignTo
+                dateend.value = data.due_date
             }
         })
 }
@@ -363,8 +376,8 @@ const removeItemById = async (taskId) => {
 
 const editItem = async (taskId) => {
     try {
-
         await fetchUsers();
+        console.log(dateend.value)
         const request = new Request(
             `https://localhost/api/tasks/${taskId}`,
             {
@@ -374,7 +387,8 @@ const editItem = async (taskId) => {
                     "Content-Type": "application/merge-patch+json"
                 },
                 body: JSON.stringify({
-                    name: taskItem.value
+                    name: taskItem.value,
+                    due_date: dateend.value
                 })
             }
         );
