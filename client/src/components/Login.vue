@@ -26,7 +26,7 @@ function login() {
   }
 
   const requestLogin = new Request(
-    "https://kaitokid.fr/api/login",
+    "https://localhost/api/login",
     {
       method: "POST",
       body: JSON.stringify({
@@ -58,7 +58,7 @@ function login() {
   <section class="flex items-center justify-center mt-10">
 
     <div class="flex-1">
-      <img src="@/assets/img/Login-rafiki.png" alt="Illustration de connexion" />
+      <img class="sm:invisible md:visible" src="@/assets/img/Login-rafiki.png" alt="Illustration de connexion" />
     </div>
 
     <div class="flex-1">
@@ -91,7 +91,7 @@ function login() {
             </label>
 
             <div class="form-control mt-6">
-              <button type="submit" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary">Se connecter</button>
             </div>
 
           </form>

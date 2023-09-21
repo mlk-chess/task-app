@@ -3842,6 +3842,44 @@ html {
   --alert-bg-mix: hsl(var(--b1));
 }
 
+@media (min-width: 380px) {
+  .sm\:stats-vertical {
+    grid-auto-flow: row;
+  }
+
+  .sm\:stats-vertical > :not([hidden]) ~ :not([hidden]) {
+    --tw-divide-y-reverse: 0;
+    border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+    border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+    --tw-divide-x-reverse: 0;
+    border-right-width: calc(0px * var(--tw-divide-x-reverse));
+    border-left-width: calc(0px * calc(1 - var(--tw-divide-x-reverse)));
+  }
+
+  .sm\:stats-vertical {
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:stats-horizontal {
+    grid-auto-flow: column;
+  }
+
+  .md\:stats-horizontal > :not([hidden]) ~ :not([hidden]) {
+    --tw-divide-x-reverse: 0;
+    border-right-width: calc(1px * var(--tw-divide-x-reverse));
+    border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    --tw-divide-y-reverse: 0;
+    border-top-width: calc(0px * calc(1 - var(--tw-divide-y-reverse)));
+    border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
+  }
+
+  .md\:stats-horizontal {
+    overflow-x: auto;
+  }
+}
+
 .hover\:-translate-y-1:hover {
   --tw-translate-y: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -3918,6 +3956,14 @@ html {
 }
 
 @media (min-width: 380px) {
+  .sm\:invisible {
+    visibility: hidden;
+  }
+
+  .sm\:mt-10 {
+    margin-top: 2.5rem;
+  }
+
   .sm\:flex {
     display: flex;
   }
@@ -3925,15 +3971,61 @@ html {
   .sm\:flex-col {
     flex-direction: column;
   }
+
+  .sm\:justify-center {
+    justify-content: center;
+  }
+
+  .sm\:p-0 {
+    padding: 0px;
+  }
+
+  .sm\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .sm\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .sm\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .sm\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
 }
 
 @media (min-width: 768px) {
+  .md\:visible {
+    visibility: visible;
+  }
+
+  .md\:m-10 {
+    margin: 2.5rem;
+  }
+
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .md\:flex-row {
     flex-direction: row;
+  }
+
+  .md\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 }
 

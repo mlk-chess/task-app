@@ -4,7 +4,7 @@
             <div>
                 <h2 class="text-2xl font-bold">Téléchargez notre application sur IOS et Android</h2>
             </div>
-            <div class="stats shadow">
+            <div class="stats sm:stats-vertical md:stats-horizontal shadow">
                 <div class="stat place-items-center">
                     <div class="stat-title">Téléchargements</div>
                     <div class="stat-value">31K</div>

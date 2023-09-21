@@ -38,7 +38,7 @@ function register() {
   isLoad.value = true
 
   const requestRegister = new Request(
-    "https://kaitokid.fr/api/users",
+    "https://localhost/api/users",
     {
       method: "POST",
       body: JSON.stringify({
@@ -83,7 +83,7 @@ function register() {
   <section class="flex items-center justify-center mt-10">
 
     <div class="flex-1">
-      <img src="@/assets/img/Queue-amico.png" alt="Illustration d'inscription" />
+      <img class="sm:invisible md:visible" src="@/assets/img/Queue-amico.png" alt="Illustration d'inscription" />
     </div>
 
     <div class="flex-1">
@@ -130,7 +130,7 @@ function register() {
                   class="input input-bordered w-full max-w-xs" placeholder="*********" />
               </div>
               <div class="form-control mt-6">
-                <button type="submit" class="btn btn-secondary">Register</button>
+                <button type="submit" class="btn btn-secondary">S'enregistrer</button>
               </div>
             </form>
           </div>
