@@ -151,10 +151,9 @@
                                     <div class="mt-5">
                                         <label class="block text-sm">
                                             <span class="text-gray-700 dark:text-gray-400">Date d'échéance</span>
-                                            <input type="datetime-local"
+                                            <input type="date"
                                                 class="mt-1 block w-full rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
                                                 v-model="dateend" />
-                                            {{ dateend }}
                                         </label>
                                     </div>
                                 </div>
@@ -224,10 +223,10 @@ const handleItemClick = (element) => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
-            console.log(data)
             if (data) {
                 taskAssignedContributors.value = data.assignTo
-                dateend.value = data.due_date
+                const date = data.dueDate?.split("T")[0]
+                dateend.value = date ?? null
             }
         })
 }
@@ -388,7 +387,7 @@ const editItem = async (taskId) => {
                 },
                 body: JSON.stringify({
                     name: taskItem.value,
-                    due_date: dateend.value
+                    dueDate: dateend.value
                 })
             }
         );
