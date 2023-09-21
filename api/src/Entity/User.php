@@ -34,12 +34,21 @@ use App\Controller\GetContributorsController;
         new Get(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
+        new Put(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Patch(processor: UserPasswordHasher::class),
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Patch(
             routePrefix: '',
             name: 'reset-password',

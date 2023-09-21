@@ -9,7 +9,9 @@ import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import PasswordForgottenView from "@/views/PasswordForgottenView.vue"
 import ListsTasksView from "@/views/ListsTasksView.vue";
-import TasksView from "@/views/TasksView.vue"
+import TasksView from "@/views/TasksView.vue";
+import DashboardAdminView from "@/views/admin/DashboardAdminView.vue";
+import ManageUserView from "@/views/admin/ManageUserView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,6 +72,22 @@ const router = createRouter({
       path: "/list/:id",
       name: "tasks",
       component: TasksView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/admin/dashboard",
+      name: "dashboard-admin",
+      component: DashboardAdminView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/admin/users",
+      name: "manage-user",
+      component: ManageUserView,
       meta: {
         requiresAuth: true
       }
@@ -160,7 +178,7 @@ router.beforeEach((to, from, next) => {
         .then((data) => {
           next('/')
         })
-    }else{
+    } else {
       next()
     }
   } else {
