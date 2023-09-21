@@ -109,7 +109,7 @@
                             </template>
                             <template #actions>
                                 <div class="flex">
-                                    <button @click="createCard(1)" class="btn btn-primary mt-5">
+                                    <button @click="createCard(0)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
                                 </div>
@@ -477,7 +477,6 @@ const removeItemById = async (taskId) => {
 
 const editItem = async (taskId) => {
     try {
-        await fetchUsers();
         const request = new Request(
             `https://kaitokid.fr/api/tasks/${taskId}`,
             {
@@ -502,7 +501,8 @@ const editItem = async (taskId) => {
             if (updatedItem) {
                 updatedItem.name = taskItem.value;
             }
-
+            await fetchUsers();
+            
         } else {
             console.error("Erreur lors de la mise à jour de la tâche.");
         }
