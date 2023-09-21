@@ -2,7 +2,7 @@
     <section class="sm:flex justify-center items-center lg:flex-row sm:flex-col">
         <div class="flex flex-col items-center flex-1">
             <div>
-                <h2 class="text-2xl font-bold">Téléchargez notre application sur IOS et Android</h2>
+                <h2 class="text-2xl font-bold text-center">Téléchargez notre application sur IOS et Android</h2>
             </div>
             <div class="stats sm:stats-vertical md:stats-horizontal shadow">
                 <div class="stat place-items-center">

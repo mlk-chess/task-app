@@ -3336,12 +3336,20 @@ html {
   z-index: 1;
 }
 
+.z-10 {
+  z-index: 10;
+}
+
 .m-10 {
   margin: 2.5rem;
 }
 
 .m-auto {
   margin: auto;
+}
+
+.m-5 {
+  margin: 1.25rem;
 }
 
 .mb-3 {
@@ -3699,6 +3707,14 @@ html {
 
 .pr-16 {
   padding-right: 4rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-justify {
+  text-align: justify;
 }
 
 .text-2xl {

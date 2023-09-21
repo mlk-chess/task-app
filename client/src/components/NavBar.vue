@@ -99,7 +99,7 @@
                         </path>
                     </svg>
                 </label>
-                <div class="dropdown dropdown-end">
+                <div class="dropdown dropdown-end z-10">
                     <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li><router-link to="/profile">Profil</router-link></li>
                         <li><router-link to="/settings">Paramètres</router-link></li>
