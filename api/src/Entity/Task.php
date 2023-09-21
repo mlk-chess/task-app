@@ -27,7 +27,7 @@ class Task
 
     #[Groups(['listtask', 'slisttask'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $due_date = null;
+    private ?\DateTimeInterface $due_date = null;
 
     #[Groups(['listtask', 'slisttask'])]
     #[ORM\ManyToOne(inversedBy: 'tasks')]
@@ -66,12 +66,12 @@ class Task
         return $this;
     }
 
-    public function getDueDate(): ?\DateTimeImmutable
+    public function getDueDate(): ?\DateTimeInterface
     {
         return $this->due_date;
     }
 
-    public function setDueDate(?\DateTimeImmutable $due_date): static
+    public function setDueDate(?\DateTimeInterface $due_date): static
     {
         $this->due_date = $due_date;
 
