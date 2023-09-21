@@ -3960,6 +3960,10 @@ html {
     visibility: hidden;
   }
 
+  .sm\:m-0 {
+    margin: 0px;
+  }
+
   .sm\:mt-10 {
     margin-top: 2.5rem;
   }

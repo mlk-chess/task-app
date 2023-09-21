@@ -23,7 +23,7 @@
 
     <section>
         <div class="flex justify-center sm:flex-col md:flex-row">
-            <div class="card w-96 bg-base-100 shadow-2xl m-10">
+            <div class="card w-96 bg-base-100 shadow-2xl sm:m-0 md:m-10">
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="card w-96 bg-base-100 shadow-xl m-10">
+            <div class="card w-96 bg-base-100 shadow-xl sm:m-0 md:m-10">
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"

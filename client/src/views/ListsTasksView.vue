@@ -3,9 +3,9 @@
     <template v-else>
         <NavBar />
 
-        <div class="flex m-10 sm:flex-col md:flex-row justify-center flex-wrap">
+        <div class="flex sm:m-0 md:m-10 sm:flex-col md:flex-row justify-center flex-wrap">
             <div v-for="list in lists"
-                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:cursor-pointer duration-300">
+                class="card w-96 bg-base-100 shadow-xl sm:m-0 sm:mt-10 md:m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:cursor-pointer duration-300">
                 <div class="card-body">
                     <h2 class="card-title">{{ list.name }}</h2>
 
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div onclick="add.showModal()"
-                class="card w-96 bg-base-100 shadow-xl m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-transparent hover:cursor-pointer duration-300">
+                class="card w-96 bg-base-100 shadow-xl sm:m-0 sm:mt-10 md:m-10 transition ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-transparent hover:cursor-pointer duration-300">
                 <div class="card-body flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
