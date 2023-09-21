@@ -41,6 +41,9 @@ class Task
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $status = null;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $priority = 1;
+
     public function __construct()
     {
         $this->assignTo = new ArrayCollection();
@@ -119,6 +122,18 @@ class Task
     public function setStatus(?int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPriority(): ?int
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(int $priority): static
+    {
+        $this->priority = $priority;
 
         return $this;
     }

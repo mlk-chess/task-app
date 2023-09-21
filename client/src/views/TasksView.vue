@@ -46,7 +46,11 @@
                         </template>
                     </draggable>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-primary" onclick="todo.showModal()">
+                        <button class="btn btn-primary" onclick="todo.showModal()" @click="() => {
+                            dateend = null
+                            priority = null
+                            taskAssignedContributors = null
+                        }">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -60,8 +64,48 @@
                             </template>
                             <template #content>
                                 <div>
-                                    <input v-model="newCard" class="textarea mt-10"
+                                    <input v-model="newCard" class="textarea mt-10 mb-5"
                                         style="width: -webkit-fill-available;" />
+
+                                    <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
+
+                                    <ul class="grid w-full gap-6 md:grid-cols-3">
+                                        <li v-for="contributor in contributors">
+                                            <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
+                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                class="hidden peer" required="" />
+
+
+                                            <label :for="contributor.username"
+                                                class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
+                                                <div class="block">
+                                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username
+                                                    }}</p>
+                                                </div>
+                                            </label>
+                                        </li>
+                                    </ul>
+
+                                    <div class="mt-5">
+                                        <label class="block text-sm">
+                                            <span class="text-gray-700 dark:text-gray-400">Date d'échéance</span>
+                                            <input type="date"
+                                                class="mt-1 block w-full rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                                                v-model="dateend" />
+                                        </label>
+                                    </div>
+
+                                    <div class="mt-5">
+                                        <span class="text-gray-700 dark:text-gray-400">Priorité</span>
+                                        <input type="range" min="0" max="4" class="range" step="1" v-model="priority" />
+                                        <div class="w-full flex justify-between text-xs px-2">
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                        </div>
+                                    </div>
 
                                     <button @click="createCard(0)" class="btn btn-primary mt-5">
                                         Ajouter
@@ -109,8 +153,49 @@
                             </template>
                             <template #content>
                                 <div>
-                                    <input v-model="newCard" class="textarea mt-10"
+                                    <input v-model="newCard" class="textarea mt-10 mb-5"
                                         style="width: -webkit-fill-available;" />
+
+                                    <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
+
+                                    <ul class="grid w-full gap-6 md:grid-cols-3">
+                                        <li v-for="contributor in contributors">
+                                            <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
+                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                class="hidden peer" required="" />
+
+
+                                            <label :for="contributor.username"
+                                                class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
+                                                <div class="block">
+                                                    <p class="w-full text-lg font-semibold truncate">{{ contributor.username
+                                                    }}</p>
+                                                </div>
+                                            </label>
+                                        </li>
+                                    </ul>
+
+                                    <div class="mt-5">
+                                        <label class="block text-sm">
+                                            <span class="text-gray-700 dark:text-gray-400">Date d'échéance</span>
+                                            <input type="date"
+                                                class="mt-1 block w-full rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                                                v-model="dateend" />
+                                        </label>
+                                    </div>
+
+                                    <div class="mt-5">
+                                        <span class="text-gray-700 dark:text-gray-400">Priorité</span>
+                                        <input type="range" min="0" max="4" class="range" step="1" v-model="priority" />
+                                        <div class="w-full flex justify-between text-xs px-2">
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                        </div>
+                                    </div>
+
 
                                     <button @click="createCard(1)" class="btn btn-primary mt-5">
                                         Ajouter
@@ -134,9 +219,7 @@
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
                                                 @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
                                                 class="hidden peer" required=""
-                                                :checked="taskAssignedContributors.includes(contributor['@id'])" />
-
-
+                                                :checked="taskAssignedContributors?.includes(contributor['@id'])" />
 
                                             <label :for="contributor.username"
                                                 class="inline-flex items-center justify-between w-full p-5 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600">
@@ -156,6 +239,19 @@
                                                 v-model="dateend" />
                                         </label>
                                     </div>
+
+                                    <div class="mt-5">
+                                        <span class="text-gray-700 dark:text-gray-400">Priorité</span>
+                                        <input type="range" min="0" max="4" class="range" step="1" v-model="priority" />
+                                        <div class="w-full flex justify-between text-xs px-2">
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                            <span>|</span>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </template>
                             <template #actions>
@@ -202,6 +298,7 @@ const taskAssignedContributors = ref([]);
 const newCard = ref('');
 const token = jsCookie.get('jwt');
 const dateend = ref(null);
+const priority = ref(1);
 
 const handleItemClick = (element) => {
     taskItem.value = element.name;
@@ -227,6 +324,7 @@ const handleItemClick = (element) => {
                 taskAssignedContributors.value = data.assignTo
                 const date = data.dueDate?.split("T")[0]
                 dateend.value = date ?? null
+                priority.value = data.priority ?? 1
             }
         })
 }
@@ -376,7 +474,6 @@ const removeItemById = async (taskId) => {
 const editItem = async (taskId) => {
     try {
         await fetchUsers();
-        console.log(dateend.value)
         const request = new Request(
             `https://localhost/api/tasks/${taskId}`,
             {
@@ -387,7 +484,8 @@ const editItem = async (taskId) => {
                 },
                 body: JSON.stringify({
                     name: taskItem.value,
-                    dueDate: dateend.value
+                    dueDate: dateend.value,
+                    priority: parseInt(priority.value)
                 })
             }
         );
