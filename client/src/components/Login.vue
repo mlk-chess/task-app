@@ -44,7 +44,6 @@ function login() {
       if (data.token) {
         jsCookie.set('jwt', data.token, { expires: 1 })
         data.roles.includes("ROLE_ADMIN") ? router.push({ name: 'dashboard-admin' }) : router.push({ name: 'dashboard' }) ;
-        
       } else if (data.message === 'Not confirmed') {
         loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
       } else {

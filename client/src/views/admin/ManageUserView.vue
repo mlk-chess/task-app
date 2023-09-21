@@ -8,36 +8,38 @@
                     <tr>
                         <th>
                             <label>
-                                <input type="checkbox" class="checkbox" />
+                                #id
                             </label>
                         </th>
-                        <th>Name</th>
-                        <th>Job</th>
-                        <th>Favorite Color</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Status</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr v-for="user in users">
                         <th>
                             <label>
-                                <input type="checkbox" class="checkbox" />
+                                {{ user["@id"].split("/")[3] }}
                             </label>
                         </th>
                         <td>
                             <div class="flex items-center space-x-3">
                                 <div>
-                                    <div class="font-bold">Hart Hagerty</div>
-                                    <div class="text-sm opacity-50">United States</div>
+                                    <div class="font-bold">{{ user.username }}</div>
                                 </div>
                             </div>
                         </td>
+                        <td>{{ user.email }}</td>
+
                         <td>
-                            Zemlak, Daniel and Leannon
-                            <br />
-                            <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+                            <span class="badge badge-outline badge-primary" v-if="user.status === 1">Actif</span>
+                            <span class="badge badge-outline badge-secondary" v-else-if="user.status === 2">Admin</span>
+                            <span class="badge badge-outline" v-else-if="user.status === 0">En attente</span>
+                            <span class="badge badge-outline badge-accent" v-else>Désactivé</span>
                         </td>
-                        <td>Purple</td>
+
                         <th>
                             <button class="btn btn-ghost btn-xs">details</button>
                         </th>
@@ -46,9 +48,9 @@
                 <tfoot>
                     <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Job</th>
-                        <th>Favorite Color</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Status</th>
                         <th></th>
                     </tr>
                 </tfoot>
@@ -62,9 +64,10 @@
 <script setup>
 import NavBar from "../../components/NavBar.vue";
 import Footer from "../../components/Footer.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import jsCookie from 'js-cookie'
 
+const users = ref([]);
 
 onMounted(() => {
     const token = jsCookie.get('jwt');
@@ -78,9 +81,9 @@ onMounted(() => {
                 "Content-Type": "application/json"
             }
         })
-            .then((response) => response.json())
+            .then(response => response.json())
             .then((data) => {
-                console.log(data)
+                users.value = data["hydra:member"]
             })
     }
 })
