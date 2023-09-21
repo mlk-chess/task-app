@@ -159,7 +159,7 @@ onMounted(() => {
     if (token === undefined) {
         router.push({ name: 'login' })
     } else {
-        fetch(`https://localhost/api/users`, {
+        fetch(`https://kaitokid.fr/api/users`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token,
