@@ -125,6 +125,13 @@ const fetchUsers = async () => {
         .then(response => response.json())
         .then(data => {
             lists.value = data["hydra:member"]["0"].concat(data["hydra:member"]["1"])
+
+            lists.value = lists.value.filter((list, index, self) =>
+                index === self.findIndex((t) => (
+                    t.name === list.name
+                ))
+            )
+
             contributors.value = data["hydra:member"]["2"]
         }).finally(() => {
             isLoad.value = false;

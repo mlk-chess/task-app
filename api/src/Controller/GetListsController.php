@@ -37,13 +37,12 @@ class GetListsController extends AbstractController
             $contributors[] = $list->getContributors();
         }
 
-        $listTasks = $listTaskRepository->findAll(); // Récupère toutes les listes de tâches
+        $listTasks = $listTaskRepository->findAll();
 
         $filteredLists = [];
         foreach ($listTasks as $list) {
             $contributors2 = $list->getContributors();
 
-            // Vérifie si l'utilisateur actuel est parmi les contributeurs
             foreach ($contributors2 as $contributor) {
                 if ($contributor->getId() === $current_user->getId()) {
                     $filteredLists[] = $list;
