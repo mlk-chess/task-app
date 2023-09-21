@@ -34,10 +34,10 @@
                         <td>{{ user.email }}</td>
 
                         <td>
-                            <span class="badge badge-outline badge-primary" v-if="user.status === 1">Actif</span>
-                            <span class="badge badge-outline badge-secondary" v-else-if="user.status === 2">Admin</span>
-                            <span class="badge badge-outline" v-else-if="user.status === 0">En attente</span>
-                            <span class="badge badge-outline badge-accent" v-else>Désactivé</span>
+                            <span class="badge badge-primary" v-if="user.status === 1">Actif</span>
+                            <span class="badge badge-secondary" v-else-if="user.status === 2">Admin</span>
+                            <span class="badge" v-else-if="user.status === 0">En attente</span>
+                            <span class="badge badge-accent" v-else>Désactivé</span>
                         </td>
 
                         <th>
