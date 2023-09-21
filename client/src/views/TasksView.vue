@@ -3,10 +3,6 @@
 
     <section>
 
-    </section>
-
-    <section>
-
         <ul class="steps flex justify-center">
             <li v-for="contributor in contributors" class="step step-primary">
                 <div class="list-item-content">
@@ -345,7 +341,6 @@ watch(list1.value, (newList, oldList) => {
             id = id.split("/")
             id = id[id.length - 1]
 
-
             const request = new Request(
                 'https://kaitokid.fr/api/tasks/' + id,
                 {
@@ -362,10 +357,8 @@ watch(list1.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response);
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
     })
@@ -396,10 +389,8 @@ watch(list2.value, (newList, oldList) => {
             )
             fetch(request)
                 .then(response => {
-                    console.log(response);
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
     })
@@ -433,7 +424,9 @@ const createCard = async (status) => {
         const response = await fetch(request);
 
         if (response.ok) {
-            fetchUsers();
+            list1.value = [];
+            list2.value = [];
+            await fetchUsers();
 
             newCard.value = '';
         } else {
@@ -501,6 +494,8 @@ const editItem = async (taskId) => {
             if (updatedItem) {
                 updatedItem.name = taskItem.value;
             }
+            list1.value = [];
+            list2.value = [];
             await fetchUsers();
             
         } else {
@@ -563,7 +558,6 @@ onMounted(async () => {
 })
 
 const fetchUsers = async () => {
-
     const url = window.location.href;
     const idList = url.substring(url.lastIndexOf('/') + 1);
 
@@ -582,9 +576,6 @@ const fetchUsers = async () => {
         .then(data => {
             if (data) {
                 const tasks = data["hydra:member"][2]
-
-                list1.value = []
-                list2.value = []
 
                 tasks.forEach((task) => {
                     if (task.status === 0) {
