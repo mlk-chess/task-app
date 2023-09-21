@@ -23,7 +23,7 @@
 
     <section>
         <div class="flex justify-center sm:flex-col md:flex-row">
-            <div class="card w-96 bg-base-100 shadow-2xl m-10">
+            <div class="card w-96 bg-base-100 shadow-2xl sm:m-0 md:m-10">
                 <div class="card-body">
                     <h3 class="card-title">En cours</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list1"
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="card w-96 bg-base-100 shadow-xl m-10">
+            <div class="card w-96 bg-base-100 shadow-xl sm:m-0 md:m-10">
                 <div class="card-body">
                     <h3 class="card-title">Terminé</h3>
                     <draggable class="mt-10 cursor-grab active:cursor-grabbing focus:cursor-grabbing" :list="list2"
@@ -315,7 +315,7 @@ const handleItemClick = (element) => {
     taskItemId.value = parseInt(id);
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/tasks/" + taskItemId.value,
+        "https://localhost/api/tasks/" + taskItemId.value,
         {
             method: "GET",
             headers: {
@@ -347,7 +347,7 @@ watch(list1.value, (newList, oldList) => {
 
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -381,7 +381,7 @@ watch(list2.value, (newList, oldList) => {
             id = id[id.length - 1]
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -412,7 +412,7 @@ const createCard = async (status) => {
         const idList = url.substring(url.lastIndexOf('/') + 1);
 
         const request = new Request(
-            'https://kaitokid.fr/api/tasks',
+            'https://localhost/api/tasks',
             {
                 method: 'POST',
                 headers: {
@@ -448,7 +448,7 @@ const createCard = async (status) => {
 const removeItemById = async (taskId) => {
     try {
         const request = new Request(
-            `https://kaitokid.fr/api/tasks/${taskId}`,
+            `https://localhost/api/tasks/${taskId}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -479,7 +479,7 @@ const editItem = async (taskId) => {
     try {
         await fetchUsers();
         const request = new Request(
-            `https://kaitokid.fr/api/tasks/${taskId}`,
+            `https://localhost/api/tasks/${taskId}`,
             {
                 method: 'PATCH',
                 headers: {
@@ -528,7 +528,7 @@ const update = (e) => {
 
 const assignTo = async (taskId, contributorId, isChecked) => {
     const request = new Request(
-        `https://kaitokid.fr/api/tasks/${taskId}`,
+        `https://localhost/api/tasks/${taskId}`,
         {
             method: 'PATCH',
             headers: {
@@ -568,7 +568,7 @@ const fetchUsers = async () => {
     const idList = url.substring(url.lastIndexOf('/') + 1);
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/get-list/" + idList,
+        "https://localhost/api/get-list/" + idList,
         {
             method: "GET",
             headers: {

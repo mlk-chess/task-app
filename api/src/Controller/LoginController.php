@@ -37,6 +37,9 @@ class LoginController extends AbstractController
         if ($user->getStatus() !== 1 && $user->getStatus() !== 2 && $user->getStatus() !== 3) 
             return $this->json(['message' => 'Not confirmed'], 401);
         
-        return $this->json(['token' => $this->JWTManager->create($user)]);
+        return $this->json([
+            'token' => $this->JWTManager->create($user),
+            'roles' => $user->getRoles()
+        ]);
     }
 }

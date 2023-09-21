@@ -26,7 +26,7 @@
 
     <div v-else class="navbar bg-base-100">
         <div class="navbar-start">
-            <div class="dropdown">
+            <div class="dropdown z-10">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -99,7 +99,7 @@
                         </path>
                     </svg>
                 </label>
-                <div class="dropdown dropdown-end">
+                <div class="dropdown dropdown-end z-10">
                     <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li><router-link to="/profile">Profil</router-link></li>
                         <li><router-link to="/settings">Paramètres</router-link></li>
@@ -146,7 +146,7 @@ const token = jsCookie.get('jwt')
 const isConnected = ref(false)
 
 const requestToken = new Request(
-    "https://kaitokid.fr/api/auth",
+    "https://localhost/api/auth",
     {
         method: "POST",
         headers: {
