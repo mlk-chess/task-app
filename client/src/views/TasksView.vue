@@ -48,8 +48,8 @@
                     <div class="card-actions justify-end">
                         <button class="btn btn-primary" onclick="todo.showModal()" @click="() => {
                             dateend = null
-                            priority = null
-                            taskAssignedContributors = null
+                            priority = 1
+                            taskAssignedContributors = []
                         }">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -65,14 +65,14 @@
                             <template #content>
                                 <div>
                                     <input v-model="newCard" class="textarea mt-10 mb-5"
-                                        style="width: -webkit-fill-available;" />
+                                        style="width: -webkit-fill-available;" placeholder="Description de la tâche" />
 
                                     <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
 
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
-                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                v-model="taskAssignedContributors"
                                                 class="hidden peer" required="" />
 
 
@@ -127,19 +127,23 @@
                                 @click="handleItemClick(element)" onclick="updateModal.showModal()">
                                 <span>{{ element.name }}</span>
                                 <div class="-space-x-6">
-                                        <div class="avatar">
-                                            <div v-for="contributor in element.assignTo"
-                                                class="alert w-12 h-12 rounded-full text-2xl font-semibold flex justify-center items-center">
-                                                <span class="flex items-center justify-center w-full h-full">{{
-                                                    contributor.username[0] }}</span>
-                                            </div>
+                                    <div class="avatar">
+                                        <div v-for="contributor in element.assignTo"
+                                            class="alert w-12 h-12 rounded-full text-2xl font-semibold flex justify-center items-center">
+                                            <span class="flex items-center justify-center w-full h-full">{{
+                                                contributor.username[0] }}</span>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </template>
                     </draggable>
                     <div class="card-actions justify-end">
-                        <button class="btn btn-primary" onclick="done.showModal()">
+                        <button class="btn btn-primary" onclick="done.showModal()" @click="() => {
+                            dateend = null
+                            priority = 1
+                            taskAssignedContributors = []
+                        }">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -154,14 +158,16 @@
                             <template #content>
                                 <div>
                                     <input v-model="newCard" class="textarea mt-10 mb-5"
-                                        style="width: -webkit-fill-available;" />
+                                        style="width: -webkit-fill-available;"
+                                        placeholder="Description de la tâche"
+                                        />
 
                                     <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
 
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
-                                                @change="assignTo(taskItemId, contributor['@id'], $event.target.checked)"
+                                                v-model="taskAssignedContributors"
                                                 class="hidden peer" required="" />
 
 
@@ -400,6 +406,7 @@ watch(list2.value, (newList, oldList) => {
 })
 
 const createCard = async (status) => {
+    console.log(priority.value, taskAssignedContributors.value, dateend.value)
     try {
         const url = window.location.href;
         const idList = url.substring(url.lastIndexOf('/') + 1);
@@ -415,6 +422,9 @@ const createCard = async (status) => {
                 body: JSON.stringify({
                     name: newCard.value,
                     belongsToList: "/api/list_tasks/" + idList,
+                    assignTo: taskAssignedContributors.value,
+                    dueDate: dateend.value,
+                    priority: parseInt(priority.value),
                     status: status
                 })
             }
@@ -575,6 +585,7 @@ const fetchUsers = async () => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
+            console.log(data)
             if (data) {
                 const tasks = data["hydra:member"][2]
 
