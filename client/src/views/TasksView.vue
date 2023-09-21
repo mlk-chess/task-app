@@ -36,8 +36,8 @@
                                     <div class="avatar">
                                         <div v-for="contributor in element.assignTo"
                                             class="alert alert-primary w-12 h-12 rounded-full text-2xl font-semibold flex justify-center items-center">
-                                            <span class="flex items-center justify-center w-full h-full">{{
-                                                contributor.username[0] }}</span>
+                                            <span class="flex items-center justify-center w-full h-full">
+                                                {{ contributor.username[0] }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -72,8 +72,7 @@
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
-                                                v-model="taskAssignedContributors"
-                                                class="hidden peer" required="" />
+                                                v-model="taskAssignedContributors" class="hidden peer" required="" />
 
 
                                             <label :for="contributor.username"
@@ -106,8 +105,11 @@
                                             <span>|</span>
                                         </div>
                                     </div>
-
-                                    <button @click="createCard(0)" class="btn btn-primary mt-5">
+                                </div>
+                            </template>
+                            <template #actions>
+                                <div class="flex">
+                                    <button @click="createCard(1)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
                                 </div>
@@ -158,17 +160,14 @@
                             <template #content>
                                 <div>
                                     <input v-model="newCard" class="textarea mt-10 mb-5"
-                                        style="width: -webkit-fill-available;"
-                                        placeholder="Description de la tâche"
-                                        />
+                                        style="width: -webkit-fill-available;" placeholder="Description de la tâche" />
 
                                     <span class="text-gray-700 dark:text-gray-400">Assigner à</span>
 
                                     <ul class="grid w-full gap-6 md:grid-cols-3">
                                         <li v-for="contributor in contributors">
                                             <input type="checkbox" :id="contributor.username" :value="contributor['@id']"
-                                                v-model="taskAssignedContributors"
-                                                class="hidden peer" required="" />
+                                                v-model="taskAssignedContributors" class="hidden peer" required="" />
 
 
                                             <label :for="contributor.username"
@@ -201,8 +200,10 @@
                                             <span>|</span>
                                         </div>
                                     </div>
-
-
+                                </div>
+                            </template>
+                            <template #actions>
+                                <div class="flex">
                                     <button @click="createCard(1)" class="btn btn-primary mt-5">
                                         Ajouter
                                     </button>
@@ -406,7 +407,6 @@ watch(list2.value, (newList, oldList) => {
 })
 
 const createCard = async (status) => {
-    console.log(priority.value, taskAssignedContributors.value, dateend.value)
     try {
         const url = window.location.href;
         const idList = url.substring(url.lastIndexOf('/') + 1);
@@ -433,13 +433,7 @@ const createCard = async (status) => {
         const response = await fetch(request);
 
         if (response.ok) {
-            const responseData = await response.json();
-
-            if (status === 0) {
-                list1.value.push(responseData);
-            } else {
-                list2.value.push(responseData);
-            }
+            fetchUsers();
 
             newCard.value = '';
         } else {
@@ -495,7 +489,8 @@ const editItem = async (taskId) => {
                 body: JSON.stringify({
                     name: taskItem.value,
                     dueDate: dateend.value,
-                    priority: parseInt(priority.value)
+                    priority: parseInt(priority.value),
+                    assignTo: taskAssignedContributors.value
                 })
             }
         );
@@ -585,7 +580,6 @@ const fetchUsers = async () => {
     fetch(requestToken)
         .then(response => response.status === 200 && response.json())
         .then(data => {
-            console.log(data)
             if (data) {
                 const tasks = data["hydra:member"][2]
 
