@@ -35,7 +35,7 @@
                                 <div class="-space-x-6">
                                     <div class="avatar">
                                         <div v-for="contributor in element.assignTo"
-                                            class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-semibold flex justify-center items-center">
+                                            class="alert alert-primary w-12 h-12 rounded-full text-2xl font-semibold flex justify-center items-center">
                                             <span class="flex items-center justify-center w-full h-full">{{
                                                 contributor.username[0] }}</span>
                                         </div>
@@ -127,14 +127,14 @@
                                 @click="handleItemClick(element)" onclick="updateModal.showModal()">
                                 <span>{{ element.name }}</span>
                                 <div class="-space-x-6">
-                                    <div class="avatar">
-                                        <div v-for="contributor in element.assignTo"
-                                            class="w-12 h-12 bg-blue-500 text-white rounded-full text-2xl font-semibold flex justify-center items-center">
-                                            <span class="flex items-center justify-center w-full h-full">{{
-                                                contributor.username[0] }}</span>
+                                        <div class="avatar">
+                                            <div v-for="contributor in element.assignTo"
+                                                class="alert w-12 h-12 rounded-full text-2xl font-semibold flex justify-center items-center">
+                                                <span class="flex items-center justify-center w-full h-full">{{
+                                                    contributor.username[0] }}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </template>
                     </draggable>
