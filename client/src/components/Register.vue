@@ -38,7 +38,7 @@ function register() {
   isLoad.value = true
 
   const requestRegister = new Request(
-    "https://localhost/api/users",
+    "https://kaitokid.fr/api/users",
     {
       method: "POST",
       body: JSON.stringify({
