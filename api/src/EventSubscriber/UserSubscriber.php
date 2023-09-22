@@ -12,17 +12,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 #[AllowDynamicProperties] final class UserSubscriber implements EventSubscriberInterface
 {
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(
         private UserPasswordHasherInterface $hasher,
-        private MailerInterface $mailer,
-        private TokenStorageInterface $tokenStorage,
-        private JWTTokenManagerInterface $JWTManager,
-
+        private MailerInterface $mailer
     ) {
     }
 
@@ -43,15 +40,14 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
             $currentUser = $this->tokenStorage->getToken();
 
-            if($currentUser !== NULL){
+            if ($currentUser !== NULL) {
                 if (in_array("ROLE_ADMIN", $user->getRoles()) && !in_array("ROLE_ADMIN", $currentUser->getUser()->getRoles())) {
                     throw new \Exception("Error (#1)");
                 }
 
-                if($user->getStatus() > 0 && !in_array("ROLE_ADMIN", $currentUser->getUser()->getRoles())){
+                if ($user->getStatus() > 0 && !in_array("ROLE_ADMIN", $currentUser->getUser()->getRoles())) {
                     throw new \Exception("Error (#3)");
                 }
-
             } else {
                 if (in_array("ROLE_ADMIN", $user->getRoles())) {
                     throw new \Exception("Error (#2)");
