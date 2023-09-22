@@ -111,9 +111,49 @@
                         </td>
 
                         <th>
-                            <button class="btn btn-info btn-xs">
-                                Détails
-                            </button>
+                            <label for="detail" class="btn btn-info btn-xs">Détails</label>
+
+                            <Modals id="detail">
+                                <template #header>
+                                    Détails de l'utilisateur
+                                </template>
+                                <template #content>
+
+                                </template>
+                                <template #actions>
+                                    <div class="flex justify-between w-full">
+                                        <div>
+                                            <label for="detail" class="btn mt-5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg> </label>
+                                        </div>
+                                        <div>
+                                            <label for="detail" class="btn btn-warning mt-5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon>
+                                                </svg> </label>
+                                            <label for="detail" class="btn btn-error mt-5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path
+                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                    </path>
+                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                </svg>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </template>
+                            </Modals>
                         </th>
                     </tr>
                 </tbody>
@@ -143,6 +183,7 @@ import Modal from "../../components/UI/Modal.vue";
 import Toast from "../../components/UI/Toast.vue";
 import { onMounted, ref } from "vue";
 import jsCookie from 'js-cookie'
+import Modals from "../../components/UI/Modals.vue";
 
 const users = ref([]);
 const role = ref(["ROLE_USER"]);
@@ -157,7 +198,7 @@ const fetchUser = async () => {
     if (token === undefined) {
         router.push({ name: 'login' })
     } else {
-        fetch(`https://kaitokid.fr/api/users`, {
+        fetch(`https://localhost/api/users`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token,
@@ -183,7 +224,7 @@ const createUser = async () => {
     const password = Math.random().toString(36).slice(-8);
 
     const requestRegister = new Request(
-        "https://kaitokid.fr/api/users",
+        "https://localhost/api/users",
         {
             method: "POST",
             body: JSON.stringify({

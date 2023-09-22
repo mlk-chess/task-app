@@ -311,7 +311,7 @@ const handleItemClick = (element) => {
     taskItemId.value = parseInt(id);
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/tasks/" + taskItemId.value,
+        "https://localhost/api/tasks/" + taskItemId.value,
         {
             method: "GET",
             headers: {
@@ -342,7 +342,7 @@ watch(list1.value, (newList, oldList) => {
             id = id[id.length - 1]
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -374,7 +374,7 @@ watch(list2.value, (newList, oldList) => {
             id = id[id.length - 1]
 
             const request = new Request(
-                'https://kaitokid.fr/api/tasks/' + id,
+                'https://localhost/api/tasks/' + id,
                 {
                     method: 'PATCH',
                     headers: {
@@ -403,7 +403,7 @@ const createCard = async (status) => {
         const idList = url.substring(url.lastIndexOf('/') + 1);
 
         const request = new Request(
-            'https://kaitokid.fr/api/tasks',
+            'https://localhost/api/tasks',
             {
                 method: 'POST',
                 headers: {
@@ -441,7 +441,7 @@ const createCard = async (status) => {
 const removeItemById = async (taskId) => {
     try {
         const request = new Request(
-            `https://kaitokid.fr/api/tasks/${taskId}`,
+            `https://localhost/api/tasks/${taskId}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -471,7 +471,7 @@ const removeItemById = async (taskId) => {
 const editItem = async (taskId) => {
     try {
         const request = new Request(
-            `https://kaitokid.fr/api/tasks/${taskId}`,
+            `https://localhost/api/tasks/${taskId}`,
             {
                 method: 'PATCH',
                 headers: {
@@ -523,7 +523,7 @@ const update = (e) => {
 
 const assignTo = async (taskId, contributorId, isChecked) => {
     const request = new Request(
-        `https://kaitokid.fr/api/tasks/${taskId}`,
+        `https://localhost/api/tasks/${taskId}`,
         {
             method: 'PATCH',
             headers: {
@@ -562,7 +562,7 @@ const fetchUsers = async () => {
     const idList = url.substring(url.lastIndexOf('/') + 1);
 
     const requestToken = new Request(
-        "https://kaitokid.fr/api/get-list/" + idList,
+        "https://localhost/api/get-list/" + idList,
         {
             method: "GET",
             headers: {
