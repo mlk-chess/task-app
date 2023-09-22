@@ -46,14 +46,14 @@
                                     <div class="form-control">
                                         <label class="label cursor-pointer">
                                             <span class="label-text">Administrateur</span>
-                                            <input v-model="role" value="['ROLE_ADMIN']" type="radio" name="radio-102"
+                                            <input v-model="role" value="ROLE_USER,ROLE_ADMIN" type="radio" name="radio-102"
                                                 class="radio checked:bg-red-500" :checked="role.includes('ROLE_ADMIN')" />
                                         </label>
                                     </div>
                                     <div class="form-control mb-5">
                                         <label class="label cursor-pointer">
                                             <span class="label-text">Utilisateur standard</span>
-                                            <input v-model="role" value="['ROLE_USER']" type="radio" name="radio-102"
+                                            <input v-model="role" value="ROLE_USER" type="radio" name="radio-102"
                                                 class="radio checked:bg-blue-500" :checked="role.includes('ROLE_USER')" />
                                         </label>
                                     </div>
@@ -159,7 +159,7 @@
                                     <div class="form-control mb-5">
                                         <label class="label cursor-pointer">
                                             <span class="label-text">Administrateur</span>
-                                            <input v-model="role" value='ROLE_ADMIN' type="radio" name="radio-5"
+                                            <input v-model="role" value='ROLE_USER,ROLE_ADMIN' type="radio" name="radio-5"
                                                 class="radio checked:bg-blue-500" />
                                         </label>
                                     </div>
@@ -330,15 +330,10 @@ const createUser = async () => {
 }
 
 const handleUser = (uname, uemail, urole, ustatus) => {
-    console.log(username.value, email.value, role.value, status.value);
     username.value = uname;
     email.value = uemail;
     role.value = urole;
     status.value = ustatus;
-
-    console.log(uname, uemail, urole, ustatus);
-    console.log(username.value, email.value, role.value, status.value);
-
 }
 
 const edit = async (id) => {
@@ -352,7 +347,7 @@ const edit = async (id) => {
             body: JSON.stringify({
                 username: username.value,
                 email: email.value,
-                roles: role.value.split(),
+                roles: role.value.indexOf(',') > -1 ? role.value.split(',') : [role.value],
                 status: parseInt(status.value)
             }),
             headers: {
