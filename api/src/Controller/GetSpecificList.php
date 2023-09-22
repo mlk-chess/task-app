@@ -23,7 +23,6 @@ class GetSpecificList extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        // if users is not in list contributors access denied
         $contributors = $list->getContributors();
         $contributors[] = $list->getOwner();
 
@@ -34,13 +33,18 @@ class GetSpecificList extends AbstractController
         }
 
         $user = $this->getUser()->getUserIdentifier();
+
+        if (false === in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            throw $this->createAccessDeniedException();
+        }
+
         if (!in_array($user, $ids)) {
             throw $this->createAccessDeniedException();
         }
 
         // Get tasks
         $tasks = $list->getTasks();
-        
+
 
         return [
             'list' => $list,

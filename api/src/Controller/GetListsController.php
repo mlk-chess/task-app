@@ -39,15 +39,21 @@ class GetListsController extends AbstractController
 
         $listTasks = $listTaskRepository->findAll();
 
-        $filteredLists = [];
-        foreach ($listTasks as $list) {
-            $contributors2 = $list->getContributors();
+        // if current user hasn't role "ROLE_ADMIN"
+        if (false === in_array('ROLE_ADMIN', $current_user->getRoles())) {
 
-            foreach ($contributors2 as $contributor) {
-                if ($contributor->getId() === $current_user->getId()) {
-                    $filteredLists[] = $list;
+            $filteredLists = [];
+            foreach ($listTasks as $list) {
+                $contributors2 = $list->getContributors();
+
+                foreach ($contributors2 as $contributor) {
+                    if ($contributor->getId() === $current_user->getId()) {
+                        $filteredLists[] = $list;
+                    }
                 }
             }
+        } else {
+            $filteredLists = $listTasks;
         }
 
         return [
@@ -56,7 +62,4 @@ class GetListsController extends AbstractController
             'contributors' => $contributors
         ];
     }
-
-
-
 }
