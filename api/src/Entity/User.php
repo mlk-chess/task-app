@@ -30,7 +30,9 @@ use App\Controller\GetContributorsController;
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
+        new Post(
+            processor: UserPasswordHasher::class, 
+            validationContext: ['groups' => ['Default', 'user:create']]),
         new Get(
             security: "is_granted('ROLE_ADMIN')"
         ),

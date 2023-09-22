@@ -81,7 +81,7 @@ const router = createRouter({
       name: "dashboard-admin",
       component: DashboardAdminView,
       meta: {
-        requiresAuth: true
+        requiresAuthAdmin: true
       }
     },
     {
@@ -89,7 +89,7 @@ const router = createRouter({
       name: "manage-user",
       component: ManageUserView,
       meta: {
-        requiresAuth: true
+        requiresAuthAdmin: true
       }
     },
     {
