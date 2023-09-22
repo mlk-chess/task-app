@@ -48,7 +48,7 @@ onMounted(async () => {
 const fetchUsers = async () => {
     const token = jsCookie.get('jwt')
     const requestToken = new Request(
-        "https://localhost/api/get-contributors",
+        "https://kaitokid.fr/api/get-contributors",
         {
             method: "GET",
             headers: {

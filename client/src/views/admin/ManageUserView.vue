@@ -275,7 +275,7 @@ const fetchUser = async () => {
     if (token === undefined) {
         router.push({ name: 'login' })
     } else {
-        fetch(`https://localhost/api/users`, {
+        fetch(`https://kaitokid.fr/api/users`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token,
@@ -301,7 +301,7 @@ const createUser = async () => {
     const password = Math.random().toString(36).slice(-8);
 
     const requestRegister = new Request(
-        "https://localhost/api/users",
+        "https://kaitokid.fr/api/users",
         {
             method: "POST",
             body: JSON.stringify({
@@ -346,7 +346,7 @@ const edit = async (id) => {
     success.value = null;
 
     const requestUpdateUser = new Request(
-        `https://localhost/api/users/${id}`,
+        `https://kaitokid.fr/api/users/${id}`,
         {
             method: "PATCH",
             body: JSON.stringify({
