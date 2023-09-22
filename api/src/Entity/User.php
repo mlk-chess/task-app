@@ -33,7 +33,9 @@ use App\Controller\GetContributorsController;
         new Post(
             processor: UserPasswordHasher::class, 
             validationContext: ['groups' => ['Default', 'user:create']]),
-        new Get(),
+        new Get(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Put(
             processor: UserPasswordHasher::class,
             security: "is_granted('ROLE_ADMIN')"
