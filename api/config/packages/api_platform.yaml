@@ -18,4 +18,6 @@ api_platform:
                 type: header
 
     # enable_swagger_ui: false
-    enable_swagger: false
+    # enable_swagger: false
+    enable_docs: false
+
