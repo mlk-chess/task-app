@@ -39,7 +39,6 @@ class GetListsController extends AbstractController
 
         $listTasks = $listTaskRepository->findAll();
 
-        // if current user hasn't role "ROLE_ADMIN"
         if (false === in_array('ROLE_ADMIN', $current_user->getRoles())) {
 
             $filteredLists = [];

@@ -19,8 +19,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
     public function __construct(
         private UserPasswordHasherInterface $hasher,
-        private MailerInterface $mailer
+        private MailerInterface $mailer,
+        TokenStorageInterface $tokenStorage
     ) {
+        $this->tokenStorage = $tokenStorage;
     }
 
     public static function getSubscribedEvents()
