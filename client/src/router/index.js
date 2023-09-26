@@ -148,7 +148,7 @@ router.beforeEach((to, from, next) => {
       })
       .then((data) => {
 
-        if (data.data.roles.includes('ROLE_ADMIN')) {
+        if (data?.data?.roles?.includes('ROLE_ADMIN')) {
           next()
         } else {
           next('/login')

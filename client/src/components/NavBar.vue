@@ -153,7 +153,7 @@ fetch(requestToken)
         }
     })
     .then((data) => {
-        isAdmin.value = data.data.roles.includes('ROLE_ADMIN') ? true : false;
+        isAdmin.value = data?.data?.roles?.includes('ROLE_ADMIN') ? true : false;
     })
 
 const logout = () => {
