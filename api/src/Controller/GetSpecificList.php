@@ -34,22 +34,16 @@ class GetSpecificList extends AbstractController
 
         $user = $this->getUser()->getUserIdentifier();
 
-        if (false === in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-            throw $this->createAccessDeniedException();
-        }
+        if (in_array($user, $ids) || in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
 
-        if (!in_array($user, $ids)) {
-            throw $this->createAccessDeniedException();
-        }
-
-        // Get tasks
-        $tasks = $list->getTasks();
+            $tasks = $list->getTasks();
 
 
-        return [
-            'list' => $list,
-            'contributors' => $contributors,
-            'tasks' => $tasks ?? [],
-        ];
+            return [
+                'list' => $list,
+                'contributors' => $contributors,
+                'tasks' => $tasks ?? [],
+            ];
+        } else throw $this->createAccessDeniedException();
     }
 }
