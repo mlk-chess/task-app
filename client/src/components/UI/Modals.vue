@@ -10,8 +10,9 @@ const props = defineProps({
 </script>
 
 <template>
-    <dialog :id="id" class="modal">
-        <form method="dialog" class="modal-box">
+    <input type="checkbox" :id="id" class="modal-toggle" />
+    <div class="modal">
+        <div class="modal-box">
             <h3 class="font-bold text-lg">
                 <slot name="header">
                     Hello!
@@ -21,10 +22,9 @@ const props = defineProps({
                 <p class="py-4">Press ESC key or click the button below to close</p>
             </slot>
             <div class="modal-action">
-                <form method="dialog">
-                    <slot name="actions"></slot>
-                </form>
+                <!-- <label for="my_modal_6" class="btn">Close!</label> -->
+                <slot name="actions"></slot>
             </div>
-        </form>
-    </dialog>
+        </div>
+    </div>
 </template>

@@ -20,30 +20,45 @@ class GetListsController extends AbstractController
 
     public function __invoke()
     {
-        if (!$listTask = $this->managerRegistry->getRepository(ListTask::class)) {
+        if (!$listTaskRepository = $this->managerRegistry->getRepository(ListTask::class)) {
             throw $this->createNotFoundException();
         }
 
-        // Get list task of current user 
         $user = $this->getUser();
 
         $current_user = $this->managerRegistry->getRepository(User::class);
-        
-        // Get Id of current user
+
         $current_user = $current_user->findOneBy(['id' => $user->getUserIdentifier()]);
 
-        $listTask = $listTask->findBy(['owner' => $current_user->getId()]);
+        $listTask = $listTaskRepository->findBy(['owner' => $current_user->getId()]);
 
-        // Get contributors of list task
         $contributors = [];
         foreach ($listTask as $list) {
             $contributors[] = $list->getContributors();
         }
+
+        $listTasks = $listTaskRepository->findAll();
+
+        if (false === in_array('ROLE_ADMIN', $current_user->getRoles())) {
+
+            $filteredLists = [];
+            foreach ($listTasks as $list) {
+                $contributors2 = $list->getContributors();
+
+                foreach ($contributors2 as $contributor) {
+                    if ($contributor->getId() === $current_user->getId()) {
+                        $filteredLists[] = $list;
+                    }
+                }
+            }
+        } else {
+            $filteredLists = $listTasks;
+        }
+
         return [
             'listTask' => $listTask,
+            'filteredListTask' => $filteredLists,
             'contributors' => $contributors
         ];
-
-        // return $this->json($listTask);
     }
 }

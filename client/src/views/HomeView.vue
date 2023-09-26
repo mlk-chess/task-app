@@ -8,11 +8,11 @@
     <Footer />
 
 
-    <div class="toast">
+    <!-- <div class="toast">
         <Toast type="success" message="Test notification" />
         <Toast type="info" message="A new update has been done" />
         <Toast type="error" message="A new update has been done" />
-    </div>
+    </div> -->
 </template>
 
 <script setup>

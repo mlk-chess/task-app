@@ -26,39 +26,27 @@
 
     <div v-else class="navbar bg-base-100">
         <div class="navbar-start">
-            <div class="dropdown">
+            <div class="dropdown z-10">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                     </svg>
                 </label>
-                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <ul v-if="!isAdmin" tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li><router-link to="/dashboard">Dashboard</router-link></li>
                     <li><router-link to="/lists">Listes des tâches</router-link></li>
                     <li><router-link to="/tasks">Tâches</router-link></li>
                 </ul>
-            </div>
+                <ul v-else tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><router-link to="/admin/dashboard">Dashboard</router-link></li>
+                    <li><router-link to="/lists">Listes des tâches</router-link></li>
+                    <li><router-link to="/admin/users">Utilisateurs</router-link></li>
+                </ul>
 
-            <!-- <div class="drawer z-50">
-                <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-                <div class="drawer-content">
-                    <label for="my-drawer" class="drawer-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                    </label>
-                </div>
-                <div class="drawer-side">
-                    <label for="my-drawer" class="drawer-overlay"></label>
-                    <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
-                        <li><router-link to="/dashboard">Dashboard</router-link></li>
-                        <li><router-link to="/lists">Listes des tâches</router-link></li>
-                        <li><router-link to="/tasks">Tâches</router-link></li>
-                    </ul>
-                </div>
-            </div> -->
+            </div>
         </div>
         <div class="navbar-center">
             <router-link to="/" class="btn btn-ghost normal-case text-xl">
@@ -99,7 +87,7 @@
                         </path>
                     </svg>
                 </label>
-                <div class="dropdown dropdown-end">
+                <div class="dropdown dropdown-end z-10">
                     <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li><router-link to="/profile">Profil</router-link></li>
                         <li><router-link to="/settings">Paramètres</router-link></li>
@@ -124,6 +112,7 @@
 import jsCookie from 'js-cookie'
 import { ref, watch } from 'vue';
 
+const isAdmin = ref([]);
 const isDark = ref(localStorage.getItem("theme") !== 'lemonade');
 const theme = ref(localStorage.getItem("theme") || "lemonade");
 
@@ -146,7 +135,7 @@ const token = jsCookie.get('jwt')
 const isConnected = ref(false)
 
 const requestToken = new Request(
-    "https://localhost/api/auth",
+    "https://kaitokid.fr/api/auth",
     {
         method: "POST",
         headers: {
@@ -158,19 +147,14 @@ fetch(requestToken)
     .then((response) => {
         if (response.status === 200) {
             isConnected.value = true;
-            // return response.json();
+            return response.json();
         } else {
             return;
         }
     })
-    // .then((data) => {
-    //     console.log(data)
-    //     // if (data.data.roles.includes('ROLE_ADMIN')) {
-    //     //     next()
-    //     // } else {
-    //     //     next('/login')
-    //     // }
-    // })
+    .then((data) => {
+        isAdmin.value = data.data.roles.includes('ROLE_ADMIN') ? true : false;
+    })
 
 const logout = () => {
     jsCookie.remove('jwt')

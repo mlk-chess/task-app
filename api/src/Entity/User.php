@@ -30,16 +30,27 @@ use App\Controller\GetContributorsController;
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
+        new Post(
+            processor: UserPasswordHasher::class, 
+            validationContext: ['groups' => ['Default', 'user:create']]),
         new Get(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
+        new Put(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')"
         ),
-        new Patch(processor: UserPasswordHasher::class),
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Patch(
             routePrefix: '',
             name: 'reset-password',
@@ -101,9 +112,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:create', 'user:update'])]
     private ?string $plainPassword = null;
 
+    #[Groups(['user:read', 'user:create', 'user:update', 'listtask', 'slisttask'])]
     #[ORM\Column(type: 'json')]
     private array $roles = ["ROLE_USER"];
 
+    #[Groups(['user:read', 'user:create', 'user:update', 'listtask', 'slisttask'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $status = 0;
 

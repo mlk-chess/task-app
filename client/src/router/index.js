@@ -9,7 +9,9 @@ import ConfirmAccountView from "@/views/ConfirmAccountView.vue";
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import PasswordForgottenView from "@/views/PasswordForgottenView.vue"
 import ListsTasksView from "@/views/ListsTasksView.vue";
-import TasksView from "@/views/TasksView.vue"
+import TasksView from "@/views/TasksView.vue";
+import DashboardAdminView from "@/views/admin/DashboardAdminView.vue";
+import ManageUserView from "@/views/admin/ManageUserView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +77,22 @@ const router = createRouter({
       }
     },
     {
+      path: "/admin/dashboard",
+      name: "dashboard-admin",
+      component: DashboardAdminView,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: "/admin/users",
+      name: "manage-user",
+      component: ManageUserView,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: PageNotFound
     }
@@ -87,7 +105,7 @@ router.beforeEach((to, from, next) => {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-      "https://localhost/api/auth",
+      "https://kaitokid.fr/api/auth",
       {
         method: "POST",
         headers: {
@@ -111,7 +129,7 @@ router.beforeEach((to, from, next) => {
     const token = jsCookie.get('jwt')
 
     const requestToken = new Request(
-      "https://localhost/api/auth",
+      "https://kaitokid.fr/api/auth",
       {
         method: "POST",
         headers: {
@@ -141,7 +159,7 @@ router.beforeEach((to, from, next) => {
 
     if (token) {
       const requestToken = new Request(
-        "https://localhost/api/auth",
+        "https://kaitokid.fr/api/auth",
         {
           method: "POST",
           headers: {
@@ -160,7 +178,7 @@ router.beforeEach((to, from, next) => {
         .then((data) => {
           next('/')
         })
-    }else{
+    } else {
       next()
     }
   } else {

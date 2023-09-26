@@ -26,7 +26,7 @@ function login() {
   }
 
   const requestLogin = new Request(
-    "https://localhost/api/login",
+    "https://kaitokid.fr/api/login",
     {
       method: "POST",
       body: JSON.stringify({
@@ -43,7 +43,7 @@ function login() {
     .then((data) => {
       if (data.token) {
         jsCookie.set('jwt', data.token, { expires: 1 })
-        router.push({ name: 'dashboard' })
+        data.roles.includes("ROLE_ADMIN") ? router.push({ name: 'dashboard-admin' }) : router.push({ name: 'dashboard' }) ;
       } else if (data.message === 'Not confirmed') {
         loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
       } else {
@@ -58,7 +58,7 @@ function login() {
   <section class="flex items-center justify-center mt-10">
 
     <div class="flex-1">
-      <img src="@/assets/img/Login-rafiki.png" alt="Illustration de connexion" />
+      <img class="sm:invisible md:visible" src="@/assets/img/Login-rafiki.png" alt="Illustration de connexion" />
     </div>
 
     <div class="flex-1">
@@ -91,7 +91,7 @@ function login() {
             </label>
 
             <div class="form-control mt-6">
-              <button type="submit" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary">Se connecter</button>
             </div>
 
           </form>

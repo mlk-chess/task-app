@@ -39,12 +39,11 @@ security:
             provider: app_user_provider
 
     access_control:
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+        - { path: ^/docs, roles: PRIVATE_ACCESS } # Allows accessing the Swagger UI
         - { path: ^/api/login, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-
 when@test:
     security:
         password_hashers:
