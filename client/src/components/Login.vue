@@ -10,8 +10,8 @@ const router = useRouter()
 const isLoad = ref(false);
 
 const loginData = ref({
-  email: "johndoe@example.com",
-  password: "apassword",
+  email: "",
+  password: "",
   error: null
 });
 
